@@ -1,0 +1,12 @@
+# jupyter
+.ipynb_checkpoints
+
+# macOS
+.DS_Store
+
+# node.js
+node_modules
+package-lock.json
+
+# vscode
+.vscode

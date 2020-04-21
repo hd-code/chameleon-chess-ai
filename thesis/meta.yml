@@ -1,0 +1,23 @@
+title: Implementierung eines Computergegners für das Spiel Chamäleon Schach (ein schachähnlichen Brettspiel)
+author: Hannes Dröse
+date: 
+keywords: [chess,ai,td-learning,reinforcement-learning,minimax,maxn,chameleon-chess]
+lang: de
+header-includes: |
+    \usepackage{amsmath}
+    \DeclareMathOperator*{\argmax}{arg\,max}
+    \DeclareMathOperator*{\argmin}{arg\,min}
+documentclass: scrreprt
+papersize: a4
+bibliography: references.bib # -> funktioniert nicht !
+toc: true
+geometry:
+- left=4cm
+- right=3cm
+- top=2.5cm
+- bottom=2.5cm
+abstract: |
+  Zusammenfassung der Arbeit ...
+nocite: |
+  @*
+# pagenumbering: Roman

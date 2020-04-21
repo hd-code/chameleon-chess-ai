@@ -1,0 +1,16 @@
+{
+  "name": "chameleon-chess-intelligence",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "chameleon-chess-logic": "git+https://github.com/hd-code/chameleon-chess-logic.git#ai"
+  },
+  "devDependencies": {
+    "@types/node": "^13.9.8",
+    "ts-node": "^8.8.1",
+    "typescript": "^3.8.3"
+  }
+}
