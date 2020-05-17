@@ -1,6 +1,6 @@
 import { IGameState } from 'chameleon-chess-logic';
 import randomGames from '../../data/random-games.json';
-import { makeMoveMaxN } from '../max-n';
+import { makeMoveMaxN } from '../max-n-orig';
 import { toCSV } from '../helper/csv';
 import * as fs from 'fs';
 

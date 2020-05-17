@@ -1,6 +1,6 @@
 import type { IGSMoves } from './random-games-by-moves';
 import orderedGamesByMove from '../../data/random-games-by-moves.json';
-import { makeMoveMaxN } from '../max-n';
+import { makeMoveMaxN } from '../max-n-orig';
 import { toCSV } from '../helper/csv';
 import * as fs from 'fs';
 

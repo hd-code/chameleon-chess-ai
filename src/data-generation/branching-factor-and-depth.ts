@@ -1,5 +1,5 @@
 import { IGameState, beginGame, isGameOver, getNextGameStates } from 'chameleon-chess-logic';
-import { makeMoveMaxN } from '../max-n';
+import { makeMoveMaxN } from '../max-n-orig';
 import Random from '../helper/random';
 import { toCSV } from '../helper/csv';
 import * as fs from 'fs';

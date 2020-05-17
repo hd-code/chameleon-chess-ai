@@ -1,38 +1,43 @@
-export function toCSV<T>(data: T[]): string {
-    let result = getHeader(data[0]);
-    for (let i = 0, ie = data.length; i < ie; i++) {
-        result += getRow(data[i]);
+export function toCSV<T>(data: T[], noHeader?: boolean): string {
+    let result = '';
+
+    if (!noHeader) {
+        result += getHeader(data[0]);
     }
+
+    for (let i = 0, ie = data.length; i < ie; i++) {
+        result += getData(data[i]);
+    }
+
     return result.slice(0, -1);
 }
 
 // -----------------------------------------------------------------------------
 
-function getHeader<T>(data: T): string {
-    const keys = Object.keys(data);
-    return arrayToCSVRow(keys);
+function getHeader<T>(obj: T): string {
+    const result = Object.keys(obj);
+    return toCSVLine(result);
 }
 
-function getRow<T>(data: T): string {
-    let result = [];
-    for (const key in data) {
-        result.push(data[key]);
-    }
-    return arrayToCSVRow(result);
+function getData<T>(obj: T): string {
+    const result = Object.values(obj);
+    return toCSVLine(result);
 }
 
-function arrayToCSVRow(data: string[]|number[], divider = ',', escapeChar = '"'): string {
+function toCSVLine<T>(array: T[]): string {
     let result = '';
-    for (let i = 0, ie = data.length; i < ie; i++) {
-        const item = data[i];
-        const escape = typeof item === 'string' && item.search(divider) !== -1;
-       
-        if (escape) result += escapeChar;
-        result += item;
-        if (escape) result += escapeChar;
-        result += divider;
+    for (let i = 0, ie = array.length; i < ie; i++) {
+        result += escape('' + array[i]) + ',';
     }
-    result = result.slice(0, -1);
-    result += '\n';
-    return result;
+    return result.slice(0, -1) + '\n';
+}
+
+function escape(string: string): string {
+    return hasToBeEscaped(string)
+        ? '"' + string.replace(/"/g, '""') + '"'
+        : string;
+}
+
+function hasToBeEscaped(string: string): boolean {
+    return string.includes(',') || string.includes('"');
 }
