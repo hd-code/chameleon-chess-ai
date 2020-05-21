@@ -1,26 +1,48 @@
-import { IGameState, isGameOver, getNextGameStates } from 'chameleon-chess-logic';
-import { TPlayerScore, sumScore, evalGameState } from '../eval-func';
+import { IGameState, isGameOver, getNextGameStates, EPlayer } from 'chameleon-chess-logic';
+import { TPlayerScore, sumScore } from './helper/player-score';
+import { evalGameState } from './helper/eval-func';
 
 // -----------------------------------------------------------------------------
+// Wrapper Methods
+// -----------------------------------------------------------------------------
 
-export function maxN(gameState: IGameState, depth: number): IGameState {
-    const player = gameState.player;
-    const nextGSs = getNextGameStates(gameState);
+type S = TPlayerScore;
+type A = { player: EPlayer };
 
-    let bestScore = _maxN(nextGSs[0], depth - 1);
-    let bestIndex = 0;
+export function initScores(currentGS: IGameState, nextGSs: IGameState[]): { scores: S[], additional: A } {
+    const additional = { player: currentGS.player };
 
-    for (let i = 1, ie = nextGSs.length; i < ie; i++) {
-        const nextScore = _maxN(nextGSs[i], depth - 1);
-        if (bestScore[player] < nextScore[player]) {
-            bestScore = nextScore;
-            bestIndex = i;
-        }
+    let scores: S[] = [];
+    for (let i = 0, ie = nextGSs.length; i < ie; i++) {
+        scores[i] = _maxN(nextGSs[i], 0);
     }
 
-    return nextGSs[bestIndex];
+    return { scores, additional };
 }
 
+export function calcNextScore(gameState: IGameState, depth: number, additional: A): { score: S, additional: A } {
+    const score = _maxN(gameState, depth);
+    return { score, additional };
+}
+
+export function nextDepth(additional: A): A {
+    return additional;
+}
+
+export function findBestScoreIndex(scores: S[], additional: A): number {
+    const player = additional.player;
+    let best = scores[0], index = 0;
+    for (let i = 1, ie = scores.length; i < ie; i++) {
+        if (best[player] < scores[i][player]) {
+            best = scores[i];
+            index = i;
+        }
+    }
+    return index;
+}
+
+// -----------------------------------------------------------------------------
+// Algorithm Implementation
 // -----------------------------------------------------------------------------
 
 function _maxN(gameState: IGameState, depth: number): TPlayerScore {

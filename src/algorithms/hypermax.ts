@@ -1,34 +1,61 @@
 import { IGameState, isGameOver, getNextGameStates, EPlayer } from 'chameleon-chess-logic';
-import { TPlayerScore, getZeroScore, sumScore, evalGameState } from '../eval-func';
+import { TPlayerScore, getZeroScore, sumScore } from './helper/player-score';
+import { evalGameState } from './helper/eval-func';
 
 // -----------------------------------------------------------------------------
+// Wrapper Methods
+// -----------------------------------------------------------------------------
 
-export function hypermax(gameState: IGameState, depth: number): IGameState {
-    const player = gameState.player;
-    const nextGSs = getNextGameStates(gameState);
+type S = TPlayerScore;
+type A = { player: EPlayer, players: EPlayer[], alpha: TPlayerScore };
 
-    const players = getPlayers(gameState);
-    let alpha = getInitAlpha(players);
+export function initScores(currentGS: IGameState, nextGSs: IGameState[]): { scores: S[], additional: A } {
+    const players = getPlayers(currentGS);
+    const alpha = getInitAlpha(players);
+    const additional = { player: currentGS.player, players, alpha };
 
-    alpha[player] = _hypermax(nextGSs[0], depth - 1, alpha, players)[player];
-    let bestIndex = 0;
-
-    for (let i = 1, ie = nextGSs.length; i < ie; i++) {
-        const nextScore = _hypermax(nextGSs[i], depth - 1, alpha, players);
-        if (alpha[player] < nextScore[player]) {
-            alpha[player] = nextScore[player];
-            bestIndex = i;
-        }
+    let scores: S[] = [];
+    for (let i = 0, ie = nextGSs.length; i < ie; i++) {
+        scores[i] = hypermax(nextGSs[i], 0, alpha, players);
     }
 
-    return nextGSs[bestIndex];
+    return { scores, additional };
+}
+
+export function calcNextScore(gameState: IGameState, depth: number, additional: A): { score: S, additional: A } {
+    const score = hypermax(gameState, depth, additional.alpha, additional.players);
+    if (additional.alpha[additional.player] < score[additional.player]) {
+        additional.alpha[additional.player] = score[additional.player];
+    }
+
+    return { score, additional };
+}
+
+export function nextDepth(additional: A): A {
+    additional.alpha = getInitAlpha(additional.players);
+    return additional;
+}
+
+export function findBestScoreIndex(scores: S[], additional: A): number {
+    const player = additional.player;
+    let best = scores[0], index = 0;
+    for (let i = 1, ie = scores.length; i < ie; i++) {
+        if (best[player] < scores[i][player]) {
+            best = scores[i];
+            index = i;
+        }
+    }
+    return index;
 }
 
 // -----------------------------------------------------------------------------
+// Algorithm Implementation
+// -----------------------------------------------------------------------------
 
 const MAX_SUM = 0;
+const INF = 999999;
 
-function _hypermax(gameState: IGameState, depth: number, _alpha: TPlayerScore, players: EPlayer[]): TPlayerScore {
+function hypermax(gameState: IGameState, depth: number, _alpha: TPlayerScore, players: EPlayer[]): TPlayerScore {
     if (isGameOver(gameState) || depth <= 0) {
         const score = evalGameState(gameState);
         return calcHypermaxScore(score, players);
@@ -38,7 +65,7 @@ function _hypermax(gameState: IGameState, depth: number, _alpha: TPlayerScore, p
     const nextGSs = getNextGameStates(gameState);
     let alpha = {..._alpha}; // _alpha should be immutable (but JS objects are passed by reference)
     
-    let bestScore = _hypermax(nextGSs[0], depth - 1, alpha, players);
+    let bestScore = hypermax(nextGSs[0], depth - 1, alpha, players);
     if (alpha[player] < bestScore[player]) {
         alpha[player] = bestScore[player];
     }
@@ -46,7 +73,7 @@ function _hypermax(gameState: IGameState, depth: number, _alpha: TPlayerScore, p
     for (let i = 1, ie = nextGSs.length; i < ie; i++) {
         if (sumScore(alpha) >= MAX_SUM) break; // hypermax pruning
 
-        const nextScore = _hypermax(nextGSs[i], depth - 1, alpha, players);
+        const nextScore = hypermax(nextGSs[i], depth - 1, alpha, players);
 
         if (alpha[player] < nextScore[player]) {
             alpha[player] = nextScore[player];
@@ -69,8 +96,6 @@ function calcHypermaxScore(score: TPlayerScore, players: EPlayer[]): TPlayerScor
     return result;
 }
 
-// -----------------------------------------------------------------------------
-
 function getPlayers(gameState: IGameState): EPlayer[] {
     let result = {};
     for (let i = 0, ie = gameState.pawns.length; i < ie; i++) {
@@ -79,8 +104,6 @@ function getPlayers(gameState: IGameState): EPlayer[] {
     }
     return Object.keys(result).map(player => parseInt(player));
 }
-
-const INF = 999999;
 
 function getInitAlpha(players: EPlayer[]): TPlayerScore {
     let result = getZeroScore();

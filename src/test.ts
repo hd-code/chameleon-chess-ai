@@ -1,14 +1,11 @@
-import { playOneOnOne, evaluateOneOnOne } from './one-on-one';
-import { evalPawns, evalMoves } from './eval-func';
+import { playSession, evalSession } from "./session";
+import { maxN, maxNIS, hypermax, paranoid } from "./algorithms/wrapper";
 
 // -----------------------------------------------------------------------------
 
-const d1 = playOneOnOne(evalPawns, evalMoves, 'depth', 1);
-const d2 = playOneOnOne(evalPawns, evalMoves, 'depth', 2);
-const d3 = playOneOnOne(evalPawns, evalMoves, 'depth', 3);
+// TODO: Do some real testing!
 
-console.table([
-    evaluateOneOnOne(d1),
-    evaluateOneOnOne(d2),
-    evaluateOneOnOne(d3),
-]);
+const session = playSession([maxN,maxNIS,hypermax,paranoid], 5, 100);
+const analysis = evalSession(session);
+
+console.table(analysis);

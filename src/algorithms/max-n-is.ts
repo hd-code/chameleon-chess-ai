@@ -1,29 +1,57 @@
 import { IGameState, isGameOver, getNextGameStates, EPlayer } from 'chameleon-chess-logic';
-import { TPlayerScore, sumScore, evalGameState } from '../eval-func';
+import { TPlayerScore, sumScore } from './helper/player-score';
+import { evalGameState } from './helper/eval-func';
 
 // -----------------------------------------------------------------------------
+// Wrapper Methods
+// -----------------------------------------------------------------------------
 
-export function maxNIS(gameState: IGameState, depth: number): IGameState {
-    const player = gameState.player;
-    const nextGSs = getNextGameStates(gameState);
+type S = TPlayerScore;
+type A = { player: EPlayer, bestScore: number };
 
-    let bestScore = _maxNIS(nextGSs[0], depth - 1);
-    let bestIndex = 0;
+export function initScores(currentGS: IGameState, nextGSs: IGameState[]): { scores: S[], additional: A } {
+    const additional = { player: currentGS.player, bestScore: MIN_SCORE };
 
-    for (let i = 1, ie = nextGSs.length; i < ie; i++) {
-        const nextScore = _maxNIS(nextGSs[i], depth - 1, bestScore[player]);
-        if (bestScore[player] < nextScore[player]) {
-            bestScore = nextScore;
-            bestIndex = i;
-        }
+    let scores: S[] = [];
+    for (let i = 0, ie = nextGSs.length; i < ie; i++) {
+        scores[i] = _maxNIS(nextGSs[i], 0);
     }
 
-    return nextGSs[bestIndex];
+    return { scores, additional };
+}
+
+export function calcNextScore(gameState: IGameState, depth: number, additional: A): { score: S, additional: A } {
+    const score = _maxNIS(gameState, depth, additional.bestScore);
+    if (additional.bestScore < score[additional.player]) {
+        additional.bestScore = score[additional.player];
+    }
+
+    return { score, additional };
+}
+
+export function nextDepth(additional: A): A {
+    additional.bestScore = MIN_SCORE;
+    return additional;
+}
+
+export function findBestScoreIndex(scores: S[], additional: A): number {
+    const player = additional.player;
+    let best = scores[0], index = 0;
+    for (let i = 1, ie = scores.length; i < ie; i++) {
+        if (best[player] < scores[i][player]) {
+            best = scores[i];
+            index = i;
+        }
+    }
+    return index;
 }
 
 // -----------------------------------------------------------------------------
+// Algorithm Implementation
+// -----------------------------------------------------------------------------
 
 const MAX_SCORE = 1;
+const MIN_SCORE = 0;
 
 function _maxNIS(gameState: IGameState, depth: number, parentsBestScore = 0): TPlayerScore {
     if (isGameOver(gameState) || depth <= 0) {
