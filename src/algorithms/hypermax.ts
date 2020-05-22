@@ -1,9 +1,9 @@
 import { IGameState, isGameOver, getNextGameStates, EPlayer } from 'chameleon-chess-logic';
-import { TPlayerScore, getZeroScore, sumScore } from './helper/player-score';
+import { TPlayerScore, getZeroScore, sumScore, findMaxScoreIndex } from './helper/player-score';
 import { evalGameState } from './helper/eval-func';
 
 // -----------------------------------------------------------------------------
-// Wrapper Methods
+// Interface Implementation
 // -----------------------------------------------------------------------------
 
 type S = TPlayerScore;
@@ -37,15 +37,7 @@ export function nextDepth(additional: A): A {
 }
 
 export function findBestScoreIndex(scores: S[], additional: A): number {
-    const player = additional.player;
-    let best = scores[0], index = 0;
-    for (let i = 1, ie = scores.length; i < ie; i++) {
-        if (best[player] < scores[i][player]) {
-            best = scores[i];
-            index = i;
-        }
-    }
-    return index;
+    return findMaxScoreIndex(scores, additional.player);
 }
 
 // -----------------------------------------------------------------------------

@@ -1,6 +1,5 @@
-import assert from 'assert';
 import { IGameState, EPlayer, beginGame, isGameOver } from 'chameleon-chess-logic';
-import {  MPlayerAlgorithm, MPlayerAlgorithmName } from './types';
+import { MPlayerAlgorithm, MPlayerAlgorithmName } from './types';
 
 // -----------------------------------------------------------------------------
 
@@ -65,28 +64,8 @@ function getInitGameState(playerAlgorithm: MPlayerAlgorithm): IGameState {
 
 // TODO: Find better solution => tests!
 function isCyclingGame(gameStates: IGameState[]): boolean {
-    if (gameStates.length < 80) return false;
+    if (gameStates.length < 60) return false;
     return true;
-
-    // const lastIndex = gameStates.length - 1;
-
-    // try {
-    //     assert.notDeepStrictEqual(gameStates[lastIndex], gameStates[lastIndex -  1]);
-    //     assert.notDeepStrictEqual(gameStates[lastIndex], gameStates[lastIndex -  2]);
-    //     assert.notDeepStrictEqual(gameStates[lastIndex], gameStates[lastIndex -  3]);
-    //     assert.notDeepStrictEqual(gameStates[lastIndex], gameStates[lastIndex -  4]);
-    //     assert.notDeepStrictEqual(gameStates[lastIndex], gameStates[lastIndex -  5]);
-    //     assert.notDeepStrictEqual(gameStates[lastIndex], gameStates[lastIndex -  6]);
-    //     assert.notDeepStrictEqual(gameStates[lastIndex], gameStates[lastIndex -  7]);
-    //     assert.notDeepStrictEqual(gameStates[lastIndex], gameStates[lastIndex -  8]);
-    //     assert.notDeepStrictEqual(gameStates[lastIndex], gameStates[lastIndex -  9]);
-    //     assert.notDeepStrictEqual(gameStates[lastIndex], gameStates[lastIndex - 10]);
-    //     assert.notDeepStrictEqual(gameStates[lastIndex], gameStates[lastIndex - 11]);
-    //     assert.notDeepStrictEqual(gameStates[lastIndex], gameStates[lastIndex - 12]);
-    //     return false;
-    // } catch (e) {
-    //     return true;
-    // }
 }
 
 function getAlgorithmNames(playerAlgorithm: MPlayerAlgorithm): MPlayerAlgorithmName {

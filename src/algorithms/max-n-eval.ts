@@ -1,5 +1,5 @@
 import { IGameState, isGameOver, getNextGameStates } from 'chameleon-chess-logic';
-import { TPlayerScore, sumScore, findBestScoreIndex } from './helper/player-score';
+import { TPlayerScore, sumScore, findMaxScoreIndex } from './helper/player-score';
 import { FEvalFunc, countMoves, countPawns, countPawns100Moves } from './helper/eval-func';
 import { IAlgorithmReturn } from '../types';
 
@@ -78,7 +78,7 @@ function iterativeDeepening(gameState: IGameState, time: number, evalFunc: FEval
     }
     const end = Date.now();
 
-    const bestIndex = findBestScoreIndex(scores, player);
+    const bestIndex = findMaxScoreIndex(scores, player);
 
     return { gameState: nextGSs[bestIndex], depth: depth + (move / numOfMoves), time: end - begin };
 }

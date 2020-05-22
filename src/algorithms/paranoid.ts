@@ -1,27 +1,27 @@
 import { IGameState, isGameOver, getNextGameStates, EPlayer } from 'chameleon-chess-logic';
-import { TPlayerScore, sumScore } from './helper/player-score';
+import { TPlayerScore, sumScore, findMaxIndex } from './helper/player-score';
 import { evalGameState } from './helper/eval-func';
 
 // -----------------------------------------------------------------------------
-// Wrapper Methods
+// Interface Implementation
 // -----------------------------------------------------------------------------
 
 type S = number;
-type A = { maxPlayer: EPlayer, alpha: number };
+type A = { player: EPlayer, alpha: number };
 
 export function initScores(currentGS: IGameState, nextGSs: IGameState[]): { scores: S[], additional: A } {
-    const additional = { maxPlayer: currentGS.player, alpha: -INF };
+    const additional = { player: currentGS.player, alpha: -INF };
 
     let scores: S[] = [];
     for (let i = 0, ie = nextGSs.length; i < ie; i++) {
-        scores[i] = _paranoid(nextGSs[i], 0, additional.maxPlayer);
+        scores[i] = _paranoid(nextGSs[i], 0, additional.player);
     }
 
     return { scores, additional };
 }
 
 export function calcNextScore(gameState: IGameState, depth: number, additional: A): { score: S, additional: A } {
-    const score = _paranoid(gameState, depth, additional.maxPlayer, additional.alpha);
+    const score = _paranoid(gameState, depth, additional.player, additional.alpha);
     if (additional.alpha < score) {
         additional.alpha = score;
     }
@@ -34,14 +34,7 @@ export function nextDepth(additional: A): A {
 }
 
 export function findBestScoreIndex(scores: S[], additional: A): number {
-    let best = scores[0], index = 0;
-    for (let i = 1, ie = scores.length; i < ie; i++) {
-        if (best < scores[i]) {
-            best = scores[i];
-            index = i;
-        }
-    }
-    return index;
+    return findMaxIndex(scores);
 }
 
 // -----------------------------------------------------------------------------

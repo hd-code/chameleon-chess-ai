@@ -1,14 +1,19 @@
 import { IGameState, getNextGameStates } from 'chameleon-chess-logic';
-import { IAlgorithmReturn } from '../types';
-import * as max from './max-n';
-import * as mis from './max-n-is';
-import * as hyp from './hypermax';
-import * as par from './paranoid';
+import { IAlgorithmReturn } from './types';
+import * as max from './algorithms/max-n';
+import * as nor from './algorithms/max-n-normalize';
+import * as mis from './algorithms/max-n-is';
+import * as hyp from './algorithms/hypermax';
+import * as par from './algorithms/paranoid';
 
 // -----------------------------------------------------------------------------
 
 export function maxN(gameState: IGameState, maxDepth: number, maxTime: number): IAlgorithmReturn {
     return _maxN(gameState, maxDepth, maxTime);
+}
+
+export function maxNNorm(gameState: IGameState, maxDepth: number, maxTime: number): IAlgorithmReturn {
+    return _maxNNorm(gameState, maxDepth, maxTime);
 }
 
 export function maxNIS(gameState: IGameState, maxDepth: number, maxTime: number): IAlgorithmReturn {
@@ -25,34 +30,32 @@ export function paranoid(gameState: IGameState, maxDepth: number, maxTime: numbe
 
 // -----------------------------------------------------------------------------
 
-let _maxN = factory(
-    max.initScores, max.calcNextScore,
-    max.nextDepth,  max.findBestScoreIndex
-);
+const _maxN = factory(max);
 
-let _maxNIS = factory(
-    mis.initScores, mis.calcNextScore,
-    mis.nextDepth,  mis.findBestScoreIndex
-);
+const _maxNNorm = factory(nor);
 
-let _hypermax = factory(
-    hyp.initScores, hyp.calcNextScore,
-    hyp.nextDepth,  hyp.findBestScoreIndex
-);
+const _maxNIS = factory(mis);
 
-let _paranoid = factory(
-    par.initScores, par.calcNextScore,
-    par.nextDepth,  par.findBestScoreIndex
-);
+const _hypermax = factory(hyp);
+
+const _paranoid = factory(par);
 
 // -----------------------------------------------------------------------------
 
-function factory<S,A>(
-    initScores: (currentGS: IGameState, nextGSs: IGameState[]) => { scores: S[], additional: A },
-    calcNextScore: (gameState: IGameState, depth: number, additional: A) => { score: S, additional: A },
-    nextDepth: (additional: A) => A,
-    findBestScoreIndex: (scores: S[], additional: A) => number,
-) {
+/**
+ * Algorithms have to implement this interface. Then the `factory()` function can
+ * be used to create an algorithm instance, which is used in the testing scripts.
+ * 
+ * S..scores, A..additional, P..parameter
+ */
+export interface IAlgorithmFactory <S,A,P>{
+    initScores: (currentGS: IGameState, nextGSs: IGameState[], param?: P) => { scores: S[], additional: A };
+    calcNextScore: (gameState: IGameState, depth: number, additional: A) => { score: S, additional: A };
+    nextDepth: (additional: A) => A;
+    findBestScoreIndex: (scores: S[], additional: A) => number;
+}
+
+function factory<S,A,P>({ initScores, calcNextScore, nextDepth, findBestScoreIndex }: IAlgorithmFactory<S,A,P>, param?: P) {
     function main(gameState: IGameState, maxDepth: number, maxTime: number): IAlgorithmReturn {
         const nextGSs = getNextGameStates(gameState);
         const numOfMoves = nextGSs.length;
@@ -63,7 +66,7 @@ function factory<S,A>(
         const begin = Date.now();
     
         // ------------------------------
-        let { scores, additional } = initScores(gameState, nextGSs);
+        let { scores, additional } = initScores(gameState, nextGSs, param);
         // ------------------------------
     
         while (Date.now() - begin < maxTime && depth < maxDepth) {

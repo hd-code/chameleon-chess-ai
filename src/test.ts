@@ -1,11 +1,18 @@
 import { playSession, evalSession } from "./session";
-import { maxN, maxNIS, hypermax, paranoid } from "./algorithms/wrapper";
+import { maxN, maxNNorm, maxNIS, hypermax, paranoid } from "./algorithms";
 
 // -----------------------------------------------------------------------------
 
 // TODO: Do some real testing!
 
-const session = playSession([maxN,maxNIS,hypermax,paranoid], 5, 100);
-const analysis = evalSession(session);
+const session = playSession([
+    maxN,
+    maxNNorm,
+    // maxNIS,
+    // hypermax,
+    // paranoid
+], 3, 1000);
+const { algorithms, ...meta } = evalSession(session);
 
-console.table(analysis);
+console.log(meta);
+console.table(algorithms);
