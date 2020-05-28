@@ -8,17 +8,6 @@ export function getZeroScore(): TPlayerScore {
     return { 0: 0, 1: 0, 2: 0, 3: 0 };
 }
 
-/** Subtracts the scores of the opponents from each player's score. */
-export function subOpponents(score: TPlayerScore): TPlayerScore {
-    const sum = sumScore(score);
-    return {
-        0: 2 * score[0] - sum,
-        1: 2 * score[1] - sum,
-        2: 2 * score[2] - sum,
-        3: 2 * score[3] - sum,
-    };
-}
-
 export function sumScore(score: TPlayerScore): number {
     return score[0] + score[1] + score[2] + score[3];
 }

@@ -1,34 +1,29 @@
-import { IGameState, isGameOver, getNextGameStates, EPlayer } from 'chameleon-chess-logic';
-import { TPlayerScore, sumScore, findMaxIndex } from './helper/player-score';
-import { evalGameState } from './helper/eval-func';
+import { IGameState, isGameOver, EPlayer } from 'chameleon-chess-logic';
+import { getNextGameStates } from 'chameleon-chess-logic/dist/models/game-state';
+import { TPlayerScore, sumScore, findMaxIndex, normalizeScore } from './player-score';
+import { evalGameState as evalFunc } from './eval-func';
 
 // -----------------------------------------------------------------------------
 // Interface Implementation
 // -----------------------------------------------------------------------------
 
 type S = number;
-type A = { player: EPlayer, alpha: number };
+type A = { player: EPlayer, alpha: number, normalize: boolean };
+type P = boolean; // normalize score ?
 
-export function initScores(currentGS: IGameState, nextGSs: IGameState[]): { scores: S[], additional: A } {
-    const additional = { player: currentGS.player, alpha: -INF };
-
-    let scores: S[] = [];
-    for (let i = 0, ie = nextGSs.length; i < ie; i++) {
-        scores[i] = _paranoid(nextGSs[i], 0, additional.player);
-    }
-
-    return { scores, additional };
+export function init(currentGS: IGameState, param?: P): A {
+    return { player: currentGS.player, alpha: -INF, normalize: param||false };
 }
 
-export function calcNextScore(gameState: IGameState, depth: number, additional: A): { score: S, additional: A } {
-    const score = _paranoid(gameState, depth, additional.player, additional.alpha);
+export function evalGameState(gameState: IGameState, depth: number, additional: A): { score: S, additional: A } {
+    const score = paranoid(gameState, depth, additional.player, additional.normalize, additional.alpha);
     if (additional.alpha < score) {
         additional.alpha = score;
     }
     return { score, additional };
 }
 
-export function nextDepth(additional: A): A {
+export function onNextDepth(additional: A): A {
     additional.alpha = -INF;
     return additional;
 }
@@ -43,21 +38,22 @@ export function findBestScoreIndex(scores: S[], additional: A): number {
 
 const INF = 999999;
 
-function _paranoid(gameState: IGameState, depth: number, maxPlayer: EPlayer, alpha = -INF, beta = INF): number {
+function paranoid(gameState: IGameState, depth: number, maxPlayer: EPlayer, normalize: boolean, alpha = -INF, beta = INF): number {
     if (isGameOver(gameState) || depth <= 0) {
-        const score = evalGameState(gameState);
+        let score = evalFunc(gameState);
+        if (normalize) score = normalizeScore(score);
         return calcParanoidScore(score, maxPlayer);
     }
     
     const isMax = gameState.player === maxPlayer;
     const nextGSs = getNextGameStates(gameState);
     
-    let bestScore = _paranoid(nextGSs[0], depth - 1, maxPlayer, alpha, beta);
+    let bestScore = paranoid(nextGSs[0], depth - 1, maxPlayer, normalize, alpha, beta);
 
     for (let i = 1, ie = nextGSs.length; i < ie; i++) {
         if (alpha >= beta) break; // alpha-beta pruning
 
-        const nextScore = _paranoid(nextGSs[i], depth - 1, maxPlayer, alpha, beta);
+        const nextScore = paranoid(nextGSs[i], depth - 1, maxPlayer, normalize, alpha, beta);
 
         if (isMax) {
             if (alpha < nextScore) {

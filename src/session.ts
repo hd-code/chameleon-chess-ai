@@ -1,5 +1,5 @@
 import { FAlgorithm, MPlayerAlgorithm } from './types';
-import { IGame, getMoveStatsOfAlgorithm, getWinnerAlgorithm, playGame } from './game';
+import { IGame, getMoveStatsOfAlgorithm, playGame, getAlgorithmsResult } from './game';
 import { flattenArray, getPermutations } from './helper/array';
 import { avg, median } from './helper/math';
 
@@ -91,9 +91,10 @@ function makeMap(algorithms: AMatching): MPlayerAlgorithm {
 }
 
 function getAlgorithmResult(algorithm: string, session: ISession): IAlgorithmResult {
-    const wins = session.games.filter(game => getWinnerAlgorithm(game) === algorithm).length;
-    const draws = session.games.filter(game => getWinnerAlgorithm(game) === null).length;
-    const losses = session.games.length - wins - draws;
+    const results = session.games.map(game => getAlgorithmsResult(algorithm, game));
+    const wins = results.filter(result => result === 'win').length;
+    const draws = results.filter(result => result === 'draw').length;
+    const losses = results.filter(result => result === 'loss').length;
 
     const tmpStats = session.games.map(game => getMoveStatsOfAlgorithm(algorithm, game));
     const stats = flattenArray(tmpStats);

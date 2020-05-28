@@ -1,67 +1,59 @@
-import { IGameState, isGameOver, getNextGameStates, EPlayer } from 'chameleon-chess-logic';
-import { TPlayerScore, subOpponents } from './helper/player-score';
-import { evalGameState } from './helper/eval-func';
+import { IGameState, isGameOver, EPlayer } from 'chameleon-chess-logic';
+import { getNextGameStates } from 'chameleon-chess-logic/dist/models/game-state';
+import { TPlayerScore, normalizeScore, findMaxScoreIndex } from './player-score';
+import { FEvalFunc, evalGameState as bestEvalFunc } from './eval-func';
 
 // -----------------------------------------------------------------------------
 // Interface Implementation
 // -----------------------------------------------------------------------------
 
 type S = TPlayerScore;
-type A = { player: EPlayer };
+type A = { player: EPlayer, evalFunc: FEvalFunc };
+type P = { evalFunc: FEvalFunc };
 
-export function initScores(currentGS: IGameState, nextGSs: IGameState[]): { scores: S[], additional: A } {
-    const additional = { player: currentGS.player };
-
-    let scores: S[] = [];
-    for (let i = 0, ie = nextGSs.length; i < ie; i++) {
-        scores[i] = _maxN(nextGSs[i], 0);
-    }
-
-    return { scores, additional };
+export function init(currentGS: IGameState, param?: P): A {
+    const evalFunc = param ? param.evalFunc : bestEvalFunc;
+    return { player: currentGS.player, evalFunc };
 }
 
-export function calcNextScore(gameState: IGameState, depth: number, additional: A): { score: S, additional: A } {
-    const score = _maxN(gameState, depth);
+export function evalGameState(gameState: IGameState, depth: number, additional: A): { score: S, additional: A } {
+    const score = maxN(gameState, depth, additional.evalFunc);
     return { score, additional };
 }
 
-export function nextDepth(additional: A): A {
+export function onNextDepth(additional: A): A {
     return additional;
 }
 
 export function findBestScoreIndex(scores: S[], additional: A): number {
-    const player = additional.player;
-    let best = scores[0], index = 0;
-    for (let i = 1, ie = scores.length; i < ie; i++) {
-        if (best[player] < scores[i][player]) {
-            best = scores[i];
-            index = i;
-        }
-    }
-    return index;
+    return findMaxScoreIndex(scores, additional.player);
 }
 
 // -----------------------------------------------------------------------------
 // Algorithm Implementation
 // -----------------------------------------------------------------------------
 
-function _maxN(gameState: IGameState, depth: number): TPlayerScore {
+function maxN(gameState: IGameState, depth: number, evalFunc: FEvalFunc): TPlayerScore {
     if (isGameOver(gameState) || depth <= 0) {
-        const score = evalGameState(gameState);
-        return subOpponents(score);
+        return calcScore(gameState, evalFunc);
     }
     
     const player = gameState.player;
     const nextGSs = getNextGameStates(gameState);
     
-    let bestScore = _maxN(nextGSs[0], depth - 1);
+    let bestScore = maxN(nextGSs[0], depth - 1, evalFunc);
 
     for (let i = 1, ie = nextGSs.length; i < ie; i++) {
-        const nextScore = _maxN(nextGSs[i], depth - 1);
+        const nextScore = maxN(nextGSs[i], depth - 1, evalFunc);
         if (bestScore[player] < nextScore[player]) {
             bestScore = nextScore;
         }
     }
 
     return bestScore;
+}
+
+function calcScore(gameState: IGameState, evalFunc: FEvalFunc) {
+    const score = evalFunc(gameState);
+    return normalizeScore(score);
 }

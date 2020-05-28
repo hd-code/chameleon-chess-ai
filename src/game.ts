@@ -1,4 +1,4 @@
-import { IGameState, EPlayer, beginGame, isGameOver } from 'chameleon-chess-logic';
+import { IGameState, EPlayer, beginGame, isGameOver, isPlayersAlive } from 'chameleon-chess-logic';
 import { MPlayerAlgorithm, MPlayerAlgorithmName } from './types';
 
 // -----------------------------------------------------------------------------
@@ -34,10 +34,21 @@ export function playGame(players: MPlayerAlgorithm, maxDepth: number, maxTime: n
     return { players: getAlgorithmNames(players), maxDepth, maxTime, gameStates, moveStats };
 }
 
-export function getWinnerAlgorithm(game: IGame): string|null {
+export function getAlgorithmsResult(algorithm: string, game: IGame): 'win'|'draw'|'loss' {
     const lastGS = game.gameStates[game.gameStates.length - 1];
-    if (!isGameOver(lastGS)) return null;
-    return game.players[lastGS.player];
+
+    if (isGameOver(lastGS)) {
+        return game.players[lastGS.player] === algorithm ? 'win' : 'loss';
+    }
+
+    const playersState = isPlayersAlive(lastGS);
+    for (const player in playersState) {
+        if (playersState[player] && game.players[player] === algorithm) {
+            return 'draw';
+        }
+    }
+
+    return 'loss';
 }
 
 export function getMoveStatsOfAlgorithm(algorithm: string, game: IGame): IMoveStats[] {

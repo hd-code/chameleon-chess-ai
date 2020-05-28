@@ -1,6 +1,7 @@
-import { IGameState, isGameOver, getNextGameStates, EPlayer } from 'chameleon-chess-logic';
-import { TPlayerScore, normalizeScore, findMaxScoreIndex } from './helper/player-score';
-import { evalGameState } from './helper/eval-func';
+import { IGameState, isGameOver, EPlayer } from 'chameleon-chess-logic';
+import { getNextGameStates } from 'chameleon-chess-logic/dist/models/game-state';
+import { TPlayerScore, normalizeScore, findMaxScoreIndex } from './player-score';
+import { evalGameState as evalFunc } from './eval-func';
 
 // -----------------------------------------------------------------------------
 // Interface Implementation
@@ -8,20 +9,15 @@ import { evalGameState } from './helper/eval-func';
 
 type S = TPlayerScore;
 type A = { player: EPlayer, bestScore: number };
+type P = undefined;
 
-export function initScores(currentGS: IGameState, nextGSs: IGameState[]): { scores: S[], additional: A } {
-    const additional = { player: currentGS.player, bestScore: MIN_SCORE };
-
-    let scores: S[] = [];
-    for (let i = 0, ie = nextGSs.length; i < ie; i++) {
-        scores[i] = _maxNIS(nextGSs[i], 0);
-    }
-
-    return { scores, additional };
+export function init(currentGS: IGameState, param?: P): A {
+    return { player: currentGS.player, bestScore: MIN_SCORE };
 }
 
-export function calcNextScore(gameState: IGameState, depth: number, additional: A): { score: S, additional: A } {
-    const score = _maxNIS(gameState, depth, additional.bestScore);
+export function evalGameState(gameState: IGameState, depth: number, additional: A): { score: S, additional: A } {
+    const score = maxNIS(gameState, depth, additional.bestScore);
+    
     if (additional.bestScore < score[additional.player]) {
         additional.bestScore = score[additional.player];
     }
@@ -29,7 +25,7 @@ export function calcNextScore(gameState: IGameState, depth: number, additional: 
     return { score, additional };
 }
 
-export function nextDepth(additional: A): A {
+export function onNextDepth(additional: A): A {
     additional.bestScore = MIN_SCORE;
     return additional;
 }
@@ -45,9 +41,9 @@ export function findBestScoreIndex(scores: S[], additional: A): number {
 const MAX_SCORE = 1;
 const MIN_SCORE = 0;
 
-function _maxNIS(gameState: IGameState, depth: number, parentsBestScore = 0): TPlayerScore {
+function maxNIS(gameState: IGameState, depth: number, parentsBestScore = 0): TPlayerScore {
     if (isGameOver(gameState) || depth <= 0) {
-        const score = evalGameState(gameState);
+        const score = evalFunc(gameState);
         return normalizeScore(score);
     }
     
@@ -55,12 +51,12 @@ function _maxNIS(gameState: IGameState, depth: number, parentsBestScore = 0): TP
     const nextGSs = getNextGameStates(gameState);
     const maxScore = MAX_SCORE - parentsBestScore; // immediate & shallow pruning
     
-    let bestScore = _maxNIS(nextGSs[0], depth - 1);
+    let bestScore = maxNIS(nextGSs[0], depth - 1);
 
     for (let i = 1, ie = nextGSs.length; i < ie; i++) {
         if (bestScore[player] >= maxScore) break; // immediate & shallow pruning
 
-        const nextScore = _maxNIS(nextGSs[i], depth - 1);
+        const nextScore = maxNIS(nextGSs[i], depth - 1);
         if (bestScore[player] < nextScore[player]) {
             bestScore = nextScore;
         }

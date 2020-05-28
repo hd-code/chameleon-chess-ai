@@ -1,18 +1,41 @@
-import { playSession, evalSession } from "./session";
-import { maxN, maxNNorm, maxNIS, hypermax, paranoid } from "./algorithms";
+import { playSession, evalSession } from './session';
+import * as algorithms from './algorithms';
+import { FAlgorithm } from './types';
 
 // -----------------------------------------------------------------------------
 
-// TODO: Do some real testing!
+function main(algorithms: FAlgorithm[], maxDepth: number, maxTime: number) {
+    const session = playSession(algorithms, maxDepth, maxTime);
+    const { algorithms: algoResult, ...meta } = evalSession(session);
+    console.log(meta);
+    console.table(algoResult);
+}
 
-const session = playSession([
-    maxN,
-    maxNNorm,
-    // maxNIS,
-    // hypermax,
-    // paranoid
-], 3, 1000);
-const { algorithms, ...meta } = evalSession(session);
+const maxDepth = 20;
+const maxTime  = 300;
 
-console.log(meta);
-console.table(algorithms);
+// -----------------------------------------------------------------------------
+
+// main([
+//     algorithms.evalPawns,
+//     algorithms.evalPawns100Moves,
+//     algorithms.evalPawn10Roles,
+//     algorithms.evalPawn100Roles,
+// ], maxDepth, maxTime);
+
+// main([
+//     algorithms.paranoid,
+//     algorithms.paranoidNorm,
+// ], maxDepth, maxTime);
+
+// main([
+//     algorithms.hypermax,
+//     algorithms.hypermaxNorm,
+// ], maxDepth, maxTime);
+
+main([
+    algorithms.evalPawn100Roles,
+    algorithms.maxNIS,
+    algorithms.hypermax,
+    algorithms.paranoidNorm,
+], maxDepth, maxTime);
