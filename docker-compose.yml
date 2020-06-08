@@ -1,9 +1,0 @@
-version: '3.7'
-services:
-  jupyter:
-    build: .
-    ports:
-      - 5010:8888
-    volumes:
-      - ./data:/home/jovyan/data
-      - ./notebooks:/home/jovyan/notebooks

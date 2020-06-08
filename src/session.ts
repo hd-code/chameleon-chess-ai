@@ -1,4 +1,4 @@
-import { FAlgorithm, MPlayerAlgorithm } from './types';
+import { FAlgorithm, EMode, MPlayerAlgorithm } from './types';
 import { IGame, getMoveStatsOfAlgorithm, playGame, getAlgorithmsResult } from './game';
 import { flattenArray, getPermutations } from './helper/array';
 import { avg, median } from './helper/math';
@@ -7,14 +7,14 @@ import { avg, median } from './helper/math';
 
 export interface ISession {
     algorithms: string[];
-    maxDepth: number;
-    maxTime: number;
+    mode: EMode;
+    modeValue: number;
     games: IGame[];
 }
 
 export interface ISessionResult {
-    maxDepth: number;
-    maxTime: number;
+    mode: EMode;
+    modeValue: number;
     numOfGames: number;
     algorithms: IAlgorithmResult[];
 }
@@ -30,17 +30,17 @@ export interface IAlgorithmResult {
     timeMedian: number;
 }
 
-export function playSession(algorithms: FAlgorithm[], maxDepth: number, maxTime: number): ISession {
+export function playSession(algorithms: FAlgorithm[], mode: EMode, modeValue: number): ISession {
     const matchings = getMatchings(algorithms);
     const maps = matchings.map(match => makeMap(match));
-    const games = maps.map(map => playGame(map, maxDepth, maxTime));
-    return { algorithms: algorithms.map(a => a.name), maxDepth, maxTime, games };
+    const games = maps.map(map => playGame(map, mode, modeValue));
+    return { algorithms: algorithms.map(a => a.name), mode, modeValue, games };
 }
 
 export function evalSession(session: ISession): ISessionResult {
     return {
-        maxDepth: session.maxDepth,
-        maxTime: session.maxTime,
+        mode: session.mode,
+        modeValue: session.modeValue,
         numOfGames: session.games.length,
         algorithms: session.algorithms.map(algorithm => getAlgorithmResult(algorithm, session)),
     };

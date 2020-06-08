@@ -1,6 +1,8 @@
 import { IGameState } from 'chameleon-chess-logic';
 import { getNextGameStates } from 'chameleon-chess-logic/dist/models/game-state';
-import { IAlgorithmReturn } from '../types';
+import { FAlgorithm, IAlgorithmReturn, EMode } from '../types';
+
+// -----------------------------------------------------------------------------
 
 /**
  * Algorithms have to implement this interface. Then the `factory()` function can
@@ -18,44 +20,49 @@ export interface IAlgorithmFactory <S,A,P>{
 export function factory<S,A,P>(
     { init, evalGameState, onNextDepth, findBestScoreIndex }: IAlgorithmFactory<S,A,P>,
     param?: P
-) {
-    function main(gameState: IGameState, maxDepth: number, maxTime: number): IAlgorithmReturn {
+): FAlgorithm {
+    return function (gameState: IGameState, mode: EMode, modeValue: number): IAlgorithmReturn {
         const nextGSs = getNextGameStates(gameState);
         const numOfMoves = nextGSs.length;
-    
+
+        let move = 0;
+        let depth = mode === 'depth' ? modeValue - 1 : 0;
+
+        let scores: S[] = [];
         // ------------------------------
         let additional = init(gameState, param);
         // ------------------------------
 
+        const startNextDepth = () => {
+            move = 0;
+            depth += 1;
+
+            // ------------------------------
+            additional = onNextDepth(additional);
+            // ------------------------------
+        }
+
         const begin = Date.now();
     
-        let scores: S[] = [];
-        for (let i = 0, ie = nextGSs.length; i < ie; i++) {
+        for (; move < numOfMoves; move++) {
             // ------------------------------
-            const { score, additional: a } = evalGameState(nextGSs[i], 0, additional);
+            const { score, additional: a } = evalGameState(nextGSs[move], depth, additional);
             scores.push(score);
             additional = a;
             // ------------------------------
         }
+        startNextDepth();
 
-        let move = 0;
-        let depth = 1;
+        if (mode === 'time') {
+            while (Date.now() - begin < modeValue && depth < MAX_DEPTH) {
 
-        while (Date.now() - begin < maxTime && depth < maxDepth) {
-
-            // ------------------------------
-            const { score, additional: a } = evalGameState(nextGSs[move], depth, additional);
-            scores[move] = score;
-            additional = a;
-            // ------------------------------
-    
-            if (++move >= numOfMoves) {
-                move = 0;
-                depth += 1;
-    
                 // ------------------------------
-                additional = onNextDepth(additional);
+                const { score, additional: a } = evalGameState(nextGSs[move], depth, additional);
+                scores[move] = score;
+                additional = a;
                 // ------------------------------
+        
+                if (++move >= numOfMoves) startNextDepth();
             }
         }
 
@@ -67,6 +74,8 @@ export function factory<S,A,P>(
     
         return { gameState: nextGSs[bestIndex], depth: depth + (move / numOfMoves), time: end - begin };
     }
-
-    return main;
 }
+
+// -----------------------------------------------------------------------------
+
+const MAX_DEPTH = 40;

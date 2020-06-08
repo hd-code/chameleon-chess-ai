@@ -2,7 +2,9 @@ import { IGameState, EPlayer } from 'chameleon-chess-logic';
 
 // -----------------------------------------------------------------------------
 
-export type FAlgorithm = (gameState: IGameState, maxDepth: number, maxTime: number) => IAlgorithmReturn
+export type EMode = 'depth'|'time';
+
+export type FAlgorithm = (gameState: IGameState, mode: EMode, modeValue: number) => IAlgorithmReturn
 
 export interface IAlgorithmReturn {
     gameState: IGameState;
