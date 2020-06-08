@@ -78,4 +78,4 @@ export function factory<S,A,P>(
 
 // -----------------------------------------------------------------------------
 
-const MAX_DEPTH = 40;
+const MAX_DEPTH = 100;

@@ -59,7 +59,7 @@ export function getMoveStatsOfAlgorithm(algorithm: string, game: IGame): IMoveSt
 
 // -----------------------------------------------------------------------------
 
-const MAX_TURNS = 60;
+const MAX_TURNS = 100;
 
 function getInitGameState(playerAlgorithm: MPlayerAlgorithm): IGameState {
     return beginGame(

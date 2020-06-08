@@ -30,15 +30,20 @@ main('eval-func-pawn10-vs-pawn100-d3', [
     Algorithms.evalPawn10Roles,
 ], 'depth', 3);
 
-main('hypermax-d3', [
-    Algorithms.hypermax,
-    Algorithms.hypermaxNorm,
+main('max-n-vs-is-d3', [
+    Algorithms.maxN,
+    Algorithms.maxNIS,
 ], 'depth', 3);
 
-main('hypermax-t100', [
-    Algorithms.hypermax,
-    Algorithms.hypermaxNorm,
+main('max-n-vs-is-t100', [
+    Algorithms.maxN,
+    Algorithms.maxNIS,
 ], 'time', 100);
+
+main('max-n-vs-is-t1000', [
+    Algorithms.maxN,
+    Algorithms.maxNIS,
+], 'time', 1000);
 
 main('paranoid-d3', [
     Algorithms.paranoid,
@@ -55,26 +60,41 @@ main('paranoid-t1000', [
     Algorithms.paranoidNorm,
 ], 'time', 1000);
 
-// main('all-d3', [
-//     Algorithms.maxN,
-//     Algorithms.maxNIS,
-//     Algorithms.hypermax,
-//     Algorithms.paranoid,
-// ], 'depth', 3);
+main('hypermax-d3', [
+    Algorithms.hypermax,
+    Algorithms.hypermaxNorm,
+], 'depth', 3);
 
-// main('all-t100', [
-//     Algorithms.maxN,
-//     Algorithms.maxNIS,
-//     Algorithms.hypermax,
-//     Algorithms.paranoid,
-// ], 'time', 100);
+main('hypermax-t100', [
+    Algorithms.hypermax,
+    Algorithms.hypermaxNorm,
+], 'time', 100);
 
-// main('all-t1000', [
-//     Algorithms.maxN,
-//     Algorithms.maxNIS,
-//     Algorithms.hypermax,
-//     Algorithms.paranoid,
-// ], 'time', 1000);
+main('hypermax-t1000', [
+    Algorithms.hypermax,
+    Algorithms.hypermaxNorm,
+], 'time', 1000);
+
+main('all-d3', [
+    Algorithms.maxN,
+    Algorithms.maxNIS,
+    Algorithms.paranoidNorm,
+    Algorithms.hypermax,
+], 'depth', 3);
+
+main('all-t100', [
+    Algorithms.maxN,
+    Algorithms.maxNIS,
+    Algorithms.paranoidNorm,
+    Algorithms.hypermax,
+], 'time', 100);
+
+main('all-t1000', [
+    Algorithms.maxN,
+    Algorithms.maxNIS,
+    Algorithms.paranoidNorm,
+    Algorithms.hypermax,
+], 'time', 1000);
 
 // -----------------------------------------------------------------------------
 // Functions
