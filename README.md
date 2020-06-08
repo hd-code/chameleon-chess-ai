@@ -19,31 +19,17 @@ cd chameleon-chess-ai
 npm install
 ```
 
-## Project Overview
+## Usage
+
+TODO: Explain package
+
+- npm start => main.ts
+- game, session, session results
+- code defined in `src`
+- some tests in `test`
+- execution in `main.ts`
+- caching of results in `data`
 
 ...
 
-### Node Scripts
-
-to execute any of the node scripts just do: `npx ts-node <path-to-script>`
-
-### Jupyter Notebooks
-
-Jupyter as a Docker-Container.
-
-Just make sure Docker is running, then open this project folder in your terminal and type:
-
-`docker-compose up`
-
-You can now access the Jupyter notebook under: http://localhost:5010
-
-Password: `secret`
-
-## Project Structure
-
-- `data` – raw csv and json files that contain different kinds of data, which are used in the rest of the project
-- `docs` – final results and findings in pdf files (output of jupyter notebooks)
-- `notebooks` – Many tasks were solved with jupyter notebooks. The notebook files are located here
-- `src` – source code for the algorithms and helper task, some scripts for generating the data in `data` are also located here
-- `test` – automatic tests for the algorithm implementations
-- `thesis` – all files concerning my bachelor thesis, mainly markdown and latex files, plus some graphics
+TODO: move math and helper to hd-snippets-js as well as unit tests, remove mocha
