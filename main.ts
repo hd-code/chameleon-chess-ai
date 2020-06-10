@@ -96,6 +96,28 @@ main('all-t1000', [
     Algorithms.hypermax,
 ], 'time', 1000);
 
+main('max-nis-vs-paranoid-t1000', [
+    Algorithms.maxNIS,
+    Algorithms.paranoidNorm,
+], 'time', 1000);
+
+main('max-nis-vs-hypermax-t1000', [
+    Algorithms.maxNIS,
+    Algorithms.hypermax,
+], 'time', 1000);
+
+main('hypermax-vs-paranoid-t1000', [
+    Algorithms.hypermax,
+    Algorithms.paranoidNorm,
+], 'time', 1000);
+
+main('all-t10000', [
+    Algorithms.maxN,
+    Algorithms.maxNIS,
+    Algorithms.paranoidNorm,
+    Algorithms.hypermax,
+], 'time', 10000);
+
 // -----------------------------------------------------------------------------
 // Functions
 // -----------------------------------------------------------------------------
