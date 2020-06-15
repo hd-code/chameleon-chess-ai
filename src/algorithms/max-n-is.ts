@@ -56,7 +56,7 @@ function maxNIS(gameState: IGameState, depth: number, parentsBestScore = 0): TPl
     for (let i = 1, ie = nextGSs.length; i < ie; i++) {
         if (bestScore[player] >= maxScore) break; // immediate & shallow pruning
 
-        const nextScore = maxNIS(nextGSs[i], depth - 1);
+        const nextScore = maxNIS(nextGSs[i], depth - 1, bestScore[player]);
         if (bestScore[player] < nextScore[player]) {
             bestScore = nextScore;
         }
