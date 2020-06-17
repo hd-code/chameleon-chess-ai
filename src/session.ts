@@ -62,6 +62,7 @@ function getMatchings(algorithms: FAlgorithm[]): AMatching[] {
             result = result.concat(getPermutations([a,a,a,_], true) as AMatching[]);
             result = result.concat(getPermutations([a,a,a,a], true) as AMatching[]);
             return removeMatchingsWithoutRed(result);
+
         case 2:
             result = result.concat(getPermutations([a,b,_,_], true) as AMatching[]);
             result = result.concat(getPermutations([a,a,b,_], true) as AMatching[]);
@@ -70,15 +71,19 @@ function getMatchings(algorithms: FAlgorithm[]): AMatching[] {
             result = result.concat(getPermutations([a,a,b,b], true) as AMatching[]);
             result = result.concat(getPermutations([a,b,b,b], true) as AMatching[]);
             return removeMatchingsWithoutRed(result);
+
         case 3:
             result = result.concat(getPermutations([a,b,c,_], true) as AMatching[]);
             result = result.concat(getPermutations([a,b,c,a], true) as AMatching[]);
             result = result.concat(getPermutations([a,b,c,b], true) as AMatching[]);
             result = result.concat(getPermutations([a,b,c,c], true) as AMatching[]);
             return removeMatchingsWithoutRed(result);
+            
         case 4:
             result = result.concat(getPermutations([a,b,c,d], true) as AMatching[]);
             return removeMatchingsWithoutRed(result);
+
+        default: return [];
     }
 }
 
@@ -96,7 +101,12 @@ function getAlgorithmResult(algorithm: string, session: ISession): IAlgorithmRes
     const draws = results.filter(result => result === 'draw').length;
     const losses = results.filter(result => result === 'loss').length;
 
-    const tmpStats = session.games.map(game => getMoveStatsOfAlgorithm(algorithm, game));
+    // games with a draw wreck the stats statistics, so they are excluded !
+    const tmpStats = session.games.map(game => {
+        return getAlgorithmsResult(algorithm, game) === 'draw'
+            ? []
+            : getMoveStatsOfAlgorithm(algorithm, game);
+    });
     const stats = flattenArray(tmpStats);
     const depth = stats.map(stats => stats.depth);
     const time  = stats.map(stats => stats.time);

@@ -2,7 +2,7 @@ import * as Algorithms from './src/algorithms';
 import { playSession, ISessionResult, evalSession } from './src/session';
 import { FAlgorithm, EMode } from './src/types';
 
-import { writeFile, readFileSync } from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 import * as path from 'path';
 
 // -----------------------------------------------------------------------------
@@ -34,6 +34,11 @@ main('max-n-vs-is-d3', [
     Algorithms.maxN,
     Algorithms.maxNIS,
 ], 'depth', 3);
+
+main('max-n-vs-is-d4', [
+    Algorithms.maxN,
+    Algorithms.maxNIS,
+], 'depth', 4);
 
 main('max-n-vs-is-t100', [
     Algorithms.maxN,
@@ -82,6 +87,13 @@ main('all-d3', [
     Algorithms.hypermax,
 ], 'depth', 3);
 
+main('all-d4', [
+    Algorithms.maxN,
+    Algorithms.maxNIS,
+    Algorithms.paranoidNorm,
+    Algorithms.hypermax,
+], 'depth', 4);
+
 main('all-t100', [
     Algorithms.maxN,
     Algorithms.maxNIS,
@@ -111,12 +123,12 @@ main('hypermax-vs-paranoid-t1000', [
     Algorithms.paranoidNorm,
 ], 'time', 1000);
 
-main('all-t10000', [
-    Algorithms.maxN,
-    Algorithms.maxNIS,
-    Algorithms.paranoidNorm,
-    Algorithms.hypermax,
-], 'time', 10000);
+// main('all-t10000', [
+//     Algorithms.maxN,
+//     Algorithms.maxNIS,
+//     Algorithms.paranoidNorm,
+//     Algorithms.hypermax,
+// ], 'time', 10000);
 
 // -----------------------------------------------------------------------------
 // Functions
@@ -150,8 +162,13 @@ function loadData<T>(fileName: string): T|null {
 }
 
 function saveData<T>(fileName: string, data: T) {
-    const filePath = path.join(DATA_DIR, fileName + '.json');
-    writeFile(filePath, JSON.stringify(data), e => e && console.error(e));
+    try {
+        const filePath = path.join(DATA_DIR, fileName + '.json');
+        writeFileSync(filePath, JSON.stringify(data));
+    } catch (e) {
+        console.log(data);
+        console.error(e);
+    }
 }
 
 function printSessionHeader(name: string, cached: boolean) {
