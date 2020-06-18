@@ -30,26 +30,6 @@ main('eval-func-pawn10-vs-pawn100-d3', [
     Algorithms.evalPawn10Roles,
 ], 'depth', 3);
 
-main('max-n-vs-is-d3', [
-    Algorithms.maxN,
-    Algorithms.maxNIS,
-], 'depth', 3);
-
-main('max-n-vs-is-d4', [
-    Algorithms.maxN,
-    Algorithms.maxNIS,
-], 'depth', 4);
-
-main('max-n-vs-is-t100', [
-    Algorithms.maxN,
-    Algorithms.maxNIS,
-], 'time', 100);
-
-main('max-n-vs-is-t1000', [
-    Algorithms.maxN,
-    Algorithms.maxNIS,
-], 'time', 1000);
-
 main('paranoid-d3', [
     Algorithms.paranoid,
     Algorithms.paranoidNorm,
@@ -106,6 +86,21 @@ main('all-t1000', [
     Algorithms.maxNIS,
     Algorithms.paranoidNorm,
     Algorithms.hypermax,
+], 'time', 1000);
+
+main('max-n-vs-is-d3', [
+    Algorithms.maxN,
+    Algorithms.maxNIS,
+], 'depth', 3);
+
+main('max-n-vs-is-t100', [
+    Algorithms.maxN,
+    Algorithms.maxNIS,
+], 'time', 100);
+
+main('max-n-vs-is-t1000', [
+    Algorithms.maxN,
+    Algorithms.maxNIS,
 ], 'time', 1000);
 
 main('max-nis-vs-paranoid-t1000', [
