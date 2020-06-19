@@ -118,12 +118,6 @@ main('hypermax-vs-paranoid-t1000', [
     Algorithms.paranoidNorm,
 ], 'time', 1000);
 
-// main('all-t10000', [
-//     Algorithms.maxN,
-//     Algorithms.maxNIS,
-//     Algorithms.paranoidNorm,
-//     Algorithms.hypermax,
-// ], 'time', 10000);
 
 // -----------------------------------------------------------------------------
 // Functions
