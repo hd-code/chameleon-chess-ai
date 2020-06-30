@@ -8,7 +8,7 @@
     "test": "mocha -r ts-node/register 'test/**/*.ts'"
   },
   "dependencies": {
-    "chameleon-chess-logic": "git+https://github.com/hd-code/chameleon-chess-logic.git#ai"
+    "chameleon-chess-logic": "git+https://github.com/hd-code/chameleon-chess-logic.git"
   },
   "devDependencies": {
     "@types/node": "^12.12.36",

@@ -1,4 +1,5 @@
 import { IGameState } from 'chameleon-chess-logic';
+import { getNextGameStates } from 'chameleon-chess-logic/dist/models/game-state';
 
 import { EMode, IAlgorithmReturn } from './types';
 
