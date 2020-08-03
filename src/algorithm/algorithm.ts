@@ -1,24 +1,35 @@
 import { IGameState } from 'chameleon-chess-logic';
 import { getNextGameStates } from 'chameleon-chess-logic/dist/models/game-state';
-import { FAlgorithm, IAlgorithmReturn, EMode } from '../types';
+import { FEvalFunc } from '../eval-func';
 
 // -----------------------------------------------------------------------------
 
+export type EMode = 'depth'|'time';
+
+export type FAlgorithm = (gameState: IGameState, mode: EMode, modeValue: number) => IAlgorithmReturn
+
+export interface IAlgorithmReturn {
+    gameState: IGameState;
+    depth: number;
+    time: number;
+}
+
 /**
- * Algorithms have to implement this interface. Then the `factory()` function can
+ * Algorithms have to implement this interface. Then the `makeAlgorithm()` function can
  * be used to create an algorithm instance, which is used in the testing scripts.
  * 
  * S..score, A..additional, P..parameter
  */
 export interface IAlgorithmFactory <S,A,P>{
     init: (currentGS: IGameState, param?: P) => A;
-    evalGameState: (gameState: IGameState, depth: number, additional: A) => { score: S, additional: A };
+    evalGameState: (gameState: IGameState, depth: number, evalFunc: FEvalFunc, additional: A) => { score: S, additional: A };
     onNextDepth: (additional: A) => A;
     findBestScoreIndex: (scores: S[], additional: A) => number;
 }
 
-export function factory<S,A,P>(
+export function makeAlgorithm<S,A,P>(
     { init, evalGameState, onNextDepth, findBestScoreIndex }: IAlgorithmFactory<S,A,P>,
+    evalFunc: FEvalFunc,
     param?: P
 ): FAlgorithm {
     return function (gameState: IGameState, mode: EMode, modeValue: number): IAlgorithmReturn {
@@ -46,7 +57,7 @@ export function factory<S,A,P>(
     
         for (; move < numOfMoves; move++) {
             // ------------------------------
-            const { score, additional: a } = evalGameState(nextGSs[move], depth, additional);
+            const { score, additional: a } = evalGameState(nextGSs[move], depth, evalFunc, additional);
             scores.push(score);
             additional = a;
             // ------------------------------
@@ -57,7 +68,7 @@ export function factory<S,A,P>(
             while (Date.now() - begin < modeValue && depth < MAX_DEPTH) {
 
                 // ------------------------------
-                const { score, additional: a } = evalGameState(nextGSs[move], depth, additional);
+                const { score, additional: a } = evalGameState(nextGSs[move], depth, evalFunc, additional);
                 scores[move] = score;
                 additional = a;
                 // ------------------------------

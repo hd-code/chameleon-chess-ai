@@ -1,29 +1,31 @@
 import { IGameState, EPlayer, beginGame, isGameOver, isPlayersAlive } from 'chameleon-chess-logic';
-import { EMode, MPlayerAlgorithm, MPlayerAlgorithmName } from './types';
+import { EMode } from './algorithm/algorithm';
+import { MPlayerAlgorithm } from './types';
+import { MNameAlgorithm } from './session';
 
 // -----------------------------------------------------------------------------
 
 export interface IGame {
     players: MPlayerAlgorithmName;
-    mode: EMode;
-    modeValue: number;
     gameStates: IGameState[];
     moveStats: IMoveStats[];
 }
+
+export type MPlayerAlgorithmName = {[player in EPlayer]: keyof MNameAlgorithm };
 
 export interface IMoveStats {
     depth: number;
     time: number;
 }
 
-export function playGame(players: MPlayerAlgorithm, mode: EMode, modeValue: number): IGame {
+export function playGame(algorithms: MNameAlgorithm, players: MPlayerAlgorithmName, mode: EMode, modeValue: number): IGame {
     let gameState = getInitGameState(players);
 
     let gameStates = [gameState];
     let moveStats: IMoveStats[] = [];
 
     while (!isGameOver(gameState) && gameStates.length <= MAX_TURNS) {
-        const algorithm = players[gameState.player];
+        const algorithm = algorithms[players[gameState.player]];
         const { gameState: gs, ...stats } = algorithm(gameState, mode, modeValue);
         gameState = gs;
 
@@ -31,7 +33,7 @@ export function playGame(players: MPlayerAlgorithm, mode: EMode, modeValue: numb
         moveStats.push(stats);
     }
 
-    return { players: getAlgorithmNames(players), mode, modeValue, gameStates, moveStats };
+    return { players, gameStates, moveStats };
 }
 
 export function getAlgorithmsResult(algorithm: string, game: IGame): 'win'|'draw'|'loss' {
@@ -61,12 +63,12 @@ export function getMoveStatsOfAlgorithm(algorithm: string, game: IGame): IMoveSt
 
 const MAX_TURNS = 100;
 
-function getInitGameState(playerAlgorithm: MPlayerAlgorithm): IGameState {
+function getInitGameState(playerAlgorithm: MPlayerAlgorithmName): IGameState {
     return beginGame(
-        playerAlgorithm[EPlayer.RED] !== null,
-        playerAlgorithm[EPlayer.GREEN] !== null,
-        playerAlgorithm[EPlayer.YELLOW] !== null,
-        playerAlgorithm[EPlayer.BLUE] !== null
+        playerAlgorithm[EPlayer.RED] !== '',
+        playerAlgorithm[EPlayer.GREEN] !== '',
+        playerAlgorithm[EPlayer.YELLOW] !== '',
+        playerAlgorithm[EPlayer.BLUE] !== ''
     );
 }
 

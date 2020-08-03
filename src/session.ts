@@ -1,9 +1,12 @@
-import { FAlgorithm, EMode, MPlayerAlgorithm } from './types';
+import { FAlgorithm, EMode } from './algorithm/algorithm';
+import { MPlayerAlgorithm } from './types';
 import { IGame, getMoveStatsOfAlgorithm, playGame, getAlgorithmsResult } from './game';
 import { flattenArray, getPermutations } from '../lib/obray';
 import { Vector } from '../lib/math';
 
 // -----------------------------------------------------------------------------
+
+export type MNameAlgorithm = {[name: string]: FAlgorithm};
 
 export interface ISession {
     algorithms: string[];
@@ -30,8 +33,9 @@ export interface IAlgorithmResult {
     timeMedian: number;
 }
 
-export function playSession(algorithms: FAlgorithm[], mode: EMode, modeValue: number): ISession {
-    const matchings = getMatchings(algorithms);
+export function playSession(algorithms: MNameAlgorithm, mode: EMode, modeValue: number): ISession {
+    const algos = Object.values(algorithms);
+    const matchings = getMatchings(algos);
     const maps = matchings.map(match => makeMap(match));
     const games = maps.map(map => playGame(map, mode, modeValue));
     return { algorithms: algorithms.map(a => a.name), mode, modeValue, games };

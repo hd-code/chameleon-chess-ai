@@ -1,7 +1,7 @@
 import { IGameState, isGameOver, EPlayer } from 'chameleon-chess-logic';
 import { getNextGameStates } from 'chameleon-chess-logic/dist/models/game-state';
-import { TPlayerScore, getZeroScore, sumScore, findMaxScoreIndex, normalizeScore } from './player-score';
-import { evalGameState as evalFunc } from './eval-func';
+import { TPlayerScore, getZeroScore, sumScore, findMaxScoreIndex, normalizeScore } from '../player-score';
+import { FEvalFunc } from '../eval-func';
 
 // -----------------------------------------------------------------------------
 // Interface Implementation
@@ -17,8 +17,8 @@ export function init(currentGS: IGameState, param?: P): A {
     return { player: currentGS.player, players, alpha, normalize: param||false };
 }
 
-export function evalGameState(gameState: IGameState, depth: number, additional: A): { score: S, additional: A } {
-    const score = hypermax(gameState, depth, additional.normalize, additional.alpha, additional.players);
+export function evalGameState(gameState: IGameState, depth: number, evalFunc: FEvalFunc, additional: A): { score: S, additional: A } {
+    const score = hypermax(gameState, depth, evalFunc, additional.normalize, additional.alpha, additional.players);
 
     if (additional.alpha[additional.player] < score[additional.player]) {
         additional.alpha[additional.player] = score[additional.player];
@@ -43,7 +43,7 @@ export function findBestScoreIndex(scores: S[], additional: A): number {
 const MAX_SUM = 0;
 const INF = 999999;
 
-function hypermax(gameState: IGameState, depth: number, normalize: boolean, _alpha: TPlayerScore, players: EPlayer[]): TPlayerScore {
+function hypermax(gameState: IGameState, depth: number, evalFunc: FEvalFunc, normalize: boolean, _alpha: TPlayerScore, players: EPlayer[]): TPlayerScore {
     if (isGameOver(gameState) || depth <= 0) {
         let score = evalFunc(gameState);
         if (normalize) score = normalizeScore(score);
@@ -54,7 +54,7 @@ function hypermax(gameState: IGameState, depth: number, normalize: boolean, _alp
     const nextGSs = getNextGameStates(gameState);
     let alpha = {..._alpha}; // _alpha should be immutable (but JS objects are passed by reference)
     
-    let bestScore = hypermax(nextGSs[0], depth - 1, normalize, alpha, players);
+    let bestScore = hypermax(nextGSs[0], depth - 1, evalFunc, normalize, alpha, players);
     if (alpha[player] < bestScore[player]) {
         alpha[player] = bestScore[player];
     }
@@ -62,7 +62,7 @@ function hypermax(gameState: IGameState, depth: number, normalize: boolean, _alp
     for (let i = 1, ie = nextGSs.length; i < ie; i++) {
         if (sumScore(alpha) >= MAX_SUM) break; // hypermax pruning
 
-        const nextScore = hypermax(nextGSs[i], depth - 1, normalize, alpha, players);
+        const nextScore = hypermax(nextGSs[i], depth - 1, evalFunc, normalize, alpha, players);
 
         if (alpha[player] < nextScore[player]) {
             alpha[player] = nextScore[player];
