@@ -1,24 +1,24 @@
 import { IGameState, EPlayer, beginGame, isGameOver, isPlayersAlive } from 'chameleon-chess-logic';
-import { EMode } from './algorithm/algorithm';
-import { MPlayerAlgorithm } from './types';
-import { MNameAlgorithm } from './session';
+import { EMode, FAlgorithm } from './algorithm/algorithm';
 
 // -----------------------------------------------------------------------------
 
 export interface IGame {
-    players: MPlayerAlgorithmName;
+    players: MPlayerAlgorithm;
     gameStates: IGameState[];
     moveStats: IMoveStats[];
 }
 
-export type MPlayerAlgorithmName = {[player in EPlayer]: keyof MNameAlgorithm };
+export type MNameAlgorithm = {[name: string]: FAlgorithm};
+
+export type MPlayerAlgorithm = {[player in EPlayer]: string|null};
 
 export interface IMoveStats {
     depth: number;
     time: number;
 }
 
-export function playGame(algorithms: MNameAlgorithm, players: MPlayerAlgorithmName, mode: EMode, modeValue: number): IGame {
+export function playGame(algorithms: MNameAlgorithm, players: MPlayerAlgorithm, mode: EMode, modeValue: number): IGame {
     let gameState = getInitGameState(players);
 
     let gameStates = [gameState];
@@ -36,6 +36,8 @@ export function playGame(algorithms: MNameAlgorithm, players: MPlayerAlgorithmNa
     return { players, gameStates, moveStats };
 }
 
+// -----------------------------------------------------------------------------
+
 export function getAlgorithmsResult(algorithm: string, game: IGame): 'win'|'draw'|'loss' {
     const lastGS = game.gameStates[game.gameStates.length - 1];
     const livingPlayers = getLivingPlayers(lastGS);
@@ -45,7 +47,7 @@ export function getAlgorithmsResult(algorithm: string, game: IGame): 'win'|'draw
     
     if (livingPlayers.length === livingAlgorithmPlayers.length) return 'win';
 
-    return 'draw'
+    return 'draw';
 }
 
 export function getMoveStatsOfAlgorithm(algorithm: string, game: IGame): IMoveStats[] {
@@ -63,23 +65,13 @@ export function getMoveStatsOfAlgorithm(algorithm: string, game: IGame): IMoveSt
 
 const MAX_TURNS = 100;
 
-function getInitGameState(playerAlgorithm: MPlayerAlgorithmName): IGameState {
+function getInitGameState(playerAlgorithm: MPlayerAlgorithm): IGameState {
     return beginGame(
-        playerAlgorithm[EPlayer.RED] !== '',
-        playerAlgorithm[EPlayer.GREEN] !== '',
-        playerAlgorithm[EPlayer.YELLOW] !== '',
-        playerAlgorithm[EPlayer.BLUE] !== ''
+        playerAlgorithm[EPlayer.RED] !== null,
+        playerAlgorithm[EPlayer.GREEN] !== null,
+        playerAlgorithm[EPlayer.YELLOW] !== null,
+        playerAlgorithm[EPlayer.BLUE] !== null
     );
-}
-
-function getAlgorithmNames(playerAlgorithm: MPlayerAlgorithm): MPlayerAlgorithmName {
-    let result: MPlayerAlgorithmName = { 0: null, 1: null, 2: null, 3: null };
-    for (const key in playerAlgorithm) {
-        if (playerAlgorithm[key] !== null) {
-            result[key] = playerAlgorithm[key].name;
-        }
-    }
-    return result;
 }
 
 function getLivingPlayers(gameState: IGameState): EPlayer[] {

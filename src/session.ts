@@ -1,12 +1,9 @@
-import { FAlgorithm, EMode } from './algorithm/algorithm';
-import { MPlayerAlgorithm } from './types';
-import { IGame, getMoveStatsOfAlgorithm, playGame, getAlgorithmsResult } from './game';
+import { EMode } from './algorithm/algorithm';
+import { IGame, MNameAlgorithm, MPlayerAlgorithm, getMoveStatsOfAlgorithm, playGame, getAlgorithmsResult } from './game';
 import { flattenArray, getPermutations } from '../lib/obray';
 import { Vector } from '../lib/math';
 
 // -----------------------------------------------------------------------------
-
-export type MNameAlgorithm = {[name: string]: FAlgorithm};
 
 export interface ISession {
     algorithms: string[];
@@ -14,6 +11,15 @@ export interface ISession {
     modeValue: number;
     games: IGame[];
 }
+
+export function playSession(algorithms: MNameAlgorithm, mode: EMode, modeValue: number): ISession {
+    const algos = Object.keys(algorithms);
+    const maps = getPlayerAlgoMaps(algos);
+    const games = maps.map(map => playGame(algorithms, map, mode, modeValue));
+    return { algorithms: algos, mode, modeValue, games };
+}
+
+// -----------------------------------------------------------------------------
 
 export interface ISessionResult {
     mode: EMode;
@@ -33,14 +39,6 @@ export interface IAlgorithmResult {
     timeMedian: number;
 }
 
-export function playSession(algorithms: MNameAlgorithm, mode: EMode, modeValue: number): ISession {
-    const algos = Object.values(algorithms);
-    const matchings = getMatchings(algos);
-    const maps = matchings.map(match => makeMap(match));
-    const games = maps.map(map => playGame(map, mode, modeValue));
-    return { algorithms: algorithms.map(a => a.name), mode, modeValue, games };
-}
-
 export function evalSession(session: ISession): ISessionResult {
     return {
         mode: session.mode,
@@ -52,52 +50,60 @@ export function evalSession(session: ISession): ISessionResult {
 
 // -----------------------------------------------------------------------------
 
-type a = FAlgorithm|null
+function getPlayerAlgoMaps(algorithms: string[]): MPlayerAlgorithm[] {
+    const matches = getMatchings(algorithms);
+    const cleanedMatches = removeMatchingsWithoutRed(matches);
+    return cleanedMatches.map(match => makePlayerMap(match));
+}
 
-type AMatching = [a,a,a,a]
+type a = string|null
 
-function getMatchings(algorithms: FAlgorithm[]): AMatching[] {
+type TMatch = [a,a,a,a]
+
+function getMatchings(algorithms: string[]): TMatch[] {
     const [a,b,c,d] = algorithms;
     const _ = null;
-    let result: AMatching[] = [];
+    let result: TMatch[] = [];
     switch (algorithms.length) {
         case 1:
-            result = result.concat(getPermutations([a,a,_,_], true) as AMatching[]);
-            result = result.concat(getPermutations([a,a,a,_], true) as AMatching[]);
-            result = result.concat(getPermutations([a,a,a,a], true) as AMatching[]);
+            result = result.concat(getPermutations([a,a,_,_], true) as TMatch[]);
+            result = result.concat(getPermutations([a,a,a,_], true) as TMatch[]);
+            result = result.concat(getPermutations([a,a,a,a], true) as TMatch[]);
             return removeMatchingsWithoutRed(result);
 
         case 2:
-            result = result.concat(getPermutations([a,b,_,_], true) as AMatching[]);
-            result = result.concat(getPermutations([a,a,b,_], true) as AMatching[]);
-            result = result.concat(getPermutations([a,b,b,_], true) as AMatching[]);
-            result = result.concat(getPermutations([a,a,a,b], true) as AMatching[]);
-            result = result.concat(getPermutations([a,a,b,b], true) as AMatching[]);
-            result = result.concat(getPermutations([a,b,b,b], true) as AMatching[]);
+            result = result.concat(getPermutations([a,b,_,_], true) as TMatch[]);
+            result = result.concat(getPermutations([a,a,b,_], true) as TMatch[]);
+            result = result.concat(getPermutations([a,b,b,_], true) as TMatch[]);
+            result = result.concat(getPermutations([a,a,a,b], true) as TMatch[]);
+            result = result.concat(getPermutations([a,a,b,b], true) as TMatch[]);
+            result = result.concat(getPermutations([a,b,b,b], true) as TMatch[]);
             return removeMatchingsWithoutRed(result);
 
         case 3:
-            result = result.concat(getPermutations([a,b,c,_], true) as AMatching[]);
-            result = result.concat(getPermutations([a,b,c,a], true) as AMatching[]);
-            result = result.concat(getPermutations([a,b,c,b], true) as AMatching[]);
-            result = result.concat(getPermutations([a,b,c,c], true) as AMatching[]);
+            result = result.concat(getPermutations([a,b,c,_], true) as TMatch[]);
+            result = result.concat(getPermutations([a,b,c,a], true) as TMatch[]);
+            result = result.concat(getPermutations([a,b,c,b], true) as TMatch[]);
+            result = result.concat(getPermutations([a,b,c,c], true) as TMatch[]);
             return removeMatchingsWithoutRed(result);
             
         case 4:
-            result = result.concat(getPermutations([a,b,c,d], true) as AMatching[]);
+            result = result.concat(getPermutations([a,b,c,d], true) as TMatch[]);
             return removeMatchingsWithoutRed(result);
 
         default: return [];
     }
 }
 
-function removeMatchingsWithoutRed(matchings: AMatching[]): AMatching[] {
+function removeMatchingsWithoutRed(matchings: TMatch[]): TMatch[] {
     return matchings.filter(match => match[0] !== null);
 }
 
-function makeMap(algorithms: AMatching): MPlayerAlgorithm {
-    return { 0:algorithms[0], 1:algorithms[1], 2:algorithms[2], 3:algorithms[3] };
+function makePlayerMap(match: TMatch): MPlayerAlgorithm {
+    return { 0: match[0], 1: match[1], 2: match[2], 3: match[3] };
 }
+
+// -----------------------------------------------------------------------------
 
 function getAlgorithmResult(algorithm: string, session: ISession): IAlgorithmResult {
     const results = session.games.map(game => getAlgorithmsResult(algorithm, game));
