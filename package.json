@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "flush-cache": "rm -rf data; mkdir data",
-    "start": "ts-node main.ts",
+    "start": "ts-node scripts/*.ts",
     "test": "mocha -r ts-node/register 'test/**/*.ts'"
   },
   "dependencies": {

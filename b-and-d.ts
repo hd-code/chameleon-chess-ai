@@ -1,8 +1,10 @@
 import { IGameState, isGameOver, beginGame } from 'chameleon-chess-logic';
 import { getNextGameStates } from 'chameleon-chess-logic/dist/models/game-state';
-import { maxNIS } from './src/algorithms';
+import { makeAlgorithm } from './src/algorithm/algorithm';
+import * as maxnis from './src/algorithm/max-n-is';
 import Random from './lib/random';
 import { Vector } from './lib/math';
+import { countPawn100Roles } from './src/eval-func';
 
 // -----------------------------------------------------------------------------
 
@@ -90,6 +92,8 @@ function getGameStats(gameStates: IGameState[]) {
 }
 
 // -----------------------------------------------------------------------------
+
+const maxNIS = makeAlgorithm(maxnis, countPawn100Roles);
 
 function computer(gameState: IGameState): IGameState {
     return maxNIS(gameState, 'time', 1000).gameState;

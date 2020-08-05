@@ -113,9 +113,7 @@ function getAlgorithmResult(algorithm: string, session: ISession): IAlgorithmRes
 
     // games with a draw wreck the stats statistics, so they are excluded !
     const tmpStats = session.games.map(game => {
-        return getAlgorithmsResult(algorithm, game) === 'draw'
-            ? []
-            : getMoveStatsOfAlgorithm(algorithm, game);
+        return getMoveStatsOfAlgorithm(algorithm, game);
     });
     const stats = flattenArray(tmpStats);
     const depth = stats.map(stats => stats.depth);
