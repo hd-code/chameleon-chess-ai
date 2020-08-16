@@ -1,4 +1,4 @@
-import { makeAlgorithm } from '../src/algorithm/algorithm';
+import { makeAlgorithm } from '../src/algorithm';
 import * as hypermax from '../src/algorithm/hypermax';
 import * as maxn from '../src/algorithm/max-n';
 import * as maxnis from '../src/algorithm/max-n-is';

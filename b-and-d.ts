@@ -1,6 +1,6 @@
 import { IGameState, isGameOver, beginGame } from 'chameleon-chess-logic';
 import { getNextGameStates } from 'chameleon-chess-logic/dist/models/game-state';
-import { makeAlgorithm } from './src/algorithm/algorithm';
+import { makeAlgorithm } from './src/algorithm';
 import * as maxnis from './src/algorithm/max-n-is';
 import Random from './lib/random';
 import { Vector } from './lib/math';

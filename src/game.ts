@@ -1,5 +1,5 @@
 import { IGameState, EPlayer, beginGame, isGameOver, isPlayersAlive } from 'chameleon-chess-logic';
-import { EMode, FAlgorithm } from './algorithm/algorithm';
+import { EMode, FAlgorithm } from './algorithm';
 
 // -----------------------------------------------------------------------------
 

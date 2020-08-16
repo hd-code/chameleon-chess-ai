@@ -1,4 +1,4 @@
-import { makeAlgorithm } from '../src/algorithm/algorithm';
+import { makeAlgorithm } from '../src/algorithm';
 import * as maxn from '../src/algorithm/max-n';
 import * as maxnis from '../src/algorithm/max-n-is';
 import { countPawn100Roles } from '../src/eval-func';

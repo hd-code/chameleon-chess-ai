@@ -1,4 +1,4 @@
-import { EMode } from './algorithm/algorithm';
+import { EMode } from './algorithm';
 import { IGame, MNameAlgorithm, MPlayerAlgorithm, getMoveStatsOfAlgorithm, playGame, getAlgorithmsResult } from './game';
 import { flattenArray, getPermutations } from '../lib/obray';
 import { Vector, round } from '../lib/math';

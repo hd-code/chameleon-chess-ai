@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { EMode } from './algorithm/algorithm';
+import { EMode } from './algorithm';
 import { MNameAlgorithm } from './game';
 import { playSession, evalSession, ISessionResult } from './session';
 
