@@ -2,7 +2,7 @@ import { makeAlgorithm } from '../src/algorithm/algorithm';
 import * as maxn from '../src/algorithm/max-n';
 import * as maxnis from '../src/algorithm/max-n-is';
 import { countPawn100Roles } from '../src/eval-func';
-import { doSession } from '../src';
+import { doSession } from '../src/main-session';
 
 // -----------------------------------------------------------------------------
 
@@ -21,3 +21,4 @@ doSession('4-max-n-t1000-2', { MaxN, MaxNIS }, 'time', 1000);
 doSession('4-max-n-t1000-3', { MaxN, MaxNIS }, 'time', 1000);
 doSession('4-max-n-t1000-4', { MaxN, MaxNIS }, 'time', 1000);
 doSession('4-max-n-t1000-5', { MaxN, MaxNIS }, 'time', 1000);
+doSession('4-max-n-t1000-6', { MaxN, MaxNIS }, 'time', 1000);

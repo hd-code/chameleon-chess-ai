@@ -1,7 +1,7 @@
 import { makeAlgorithm } from '../src/algorithm/algorithm';
 import * as maxN from '../src/algorithm/max-n';
 import { countPawns, countPawn10Roles, countPawn100Roles, countPawns100Moves } from '../src/eval-func';
-import { doSession } from '../src';
+import { doSession } from '../src/main-session';
 
 // -----------------------------------------------------------------------------
 

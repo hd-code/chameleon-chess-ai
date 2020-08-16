@@ -1,7 +1,7 @@
 import { makeAlgorithm } from '../src/algorithm/algorithm';
 import * as paranoid from '../src/algorithm/paranoid';
 import { countPawn100Roles } from '../src/eval-func';
-import { doSession } from '../src';
+import { doSession } from '../src/main-session';
 
 // -----------------------------------------------------------------------------
 

@@ -1,7 +1,7 @@
 import { makeAlgorithm } from '../src/algorithm/algorithm';
 import * as hypermax from '../src/algorithm/hypermax';
 import { countPawn100Roles } from '../src/eval-func';
-import { doSession } from '../src';
+import { doSession } from '../src/main-session';
 
 // -----------------------------------------------------------------------------
 
