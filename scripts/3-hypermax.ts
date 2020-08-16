@@ -11,5 +11,7 @@ const Hypernorm = makeAlgorithm(hypermax, countPawn100Roles, true);
 // -----------------------------------------------------------------------------
 
 doSession('3-hypermax-d3',    { Hypermax, Hypernorm }, 'depth', 3);
+
 doSession('3-hypermax-t100',  { Hypermax, Hypernorm }, 'time', 100);
+
 doSession('3-hypermax-t1000', { Hypermax, Hypernorm }, 'time', 1000);

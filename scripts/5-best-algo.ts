@@ -16,9 +16,17 @@ const Paranoid = makeAlgorithm(paranoid, countPawn100Roles, true);
 // -----------------------------------------------------------------------------
 
 doSession('5-all-d3',    { MaxN, MaxNIS, Hypermax, Paranoid }, 'depth', 3);
+
 doSession('5-all-t100',  { MaxN, MaxNIS, Hypermax, Paranoid }, 'time', 100);
+
 doSession('5-all-t1000', { MaxN, MaxNIS, Hypermax, Paranoid }, 'time', 1000);
+// doSession('5-all-t1000-2', { MaxN, MaxNIS, Hypermax, Paranoid }, 'time', 1000);
+// doSession('5-all-t1000-3', { MaxN, MaxNIS, Hypermax, Paranoid }, 'time', 1000);
 
 doSession('5-max-hyper-t1000', { MaxNIS, Hypermax }, 'time', 1000);
+
 doSession('5-max-para-t1000', { MaxNIS, Paranoid }, 'time', 1000);
+// doSession('5-max-para-t1000-1', { MaxNIS, Paranoid }, 'time', 1000);
+// doSession('5-max-para-t1000-2', { MaxNIS, Paranoid }, 'time', 1000);
+
 doSession('5-hyper-para-t1000', { Hypermax, Paranoid }, 'time', 1000);

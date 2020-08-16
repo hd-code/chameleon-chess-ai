@@ -12,5 +12,12 @@ const MaxNIS = makeAlgorithm(maxnis, countPawn100Roles);
 // -----------------------------------------------------------------------------
 
 doSession('4-max-n-d3',    { MaxN, MaxNIS }, 'depth', 3);
+
 doSession('4-max-n-t100',  { MaxN, MaxNIS }, 'time', 100);
+doSession('4-max-n-t100-2',  { MaxN, MaxNIS }, 'time', 100);
+
 doSession('4-max-n-t1000', { MaxN, MaxNIS }, 'time', 1000);
+doSession('4-max-n-t1000-2', { MaxN, MaxNIS }, 'time', 1000);
+doSession('4-max-n-t1000-3', { MaxN, MaxNIS }, 'time', 1000);
+doSession('4-max-n-t1000-4', { MaxN, MaxNIS }, 'time', 1000);
+doSession('4-max-n-t1000-5', { MaxN, MaxNIS }, 'time', 1000);

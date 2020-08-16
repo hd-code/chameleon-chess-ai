@@ -1,7 +1,7 @@
 import { EMode } from './algorithm/algorithm';
 import { IGame, MNameAlgorithm, MPlayerAlgorithm, getMoveStatsOfAlgorithm, playGame, getAlgorithmsResult } from './game';
 import { flattenArray, getPermutations } from '../lib/obray';
-import { Vector } from '../lib/math';
+import { Vector, round } from '../lib/math';
 
 // -----------------------------------------------------------------------------
 
@@ -121,7 +121,7 @@ function getAlgorithmResult(algorithm: string, session: ISession): IAlgorithmRes
 
     return {
         algorithm, wins, draws, losses,
-        depthAvg: Vector.avg(depth), depthMedian: Vector.median(depth),
-        timeAvg:  Vector.avg(time),  timeMedian:  Vector.median(time),
+        depthAvg: round(Vector.avg(depth), 2), depthMedian: round(Vector.median(depth), 2),
+        timeAvg:  round(Vector.avg(time)),     timeMedian:  round(Vector.median(time)),
     }
 }
