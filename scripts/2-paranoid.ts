@@ -1,12 +1,18 @@
-import { makeAlgorithm } from '../src/algorithm';
+/**
+ * @file
+ * This script will compare the paranoid algorithm in its normalized version
+ * with the non-normalized version.
+ */
+
+import { factory } from '../src/algorithm/factory';
 import * as paranoid from '../src/algorithm/paranoid';
 import { countPawn100Roles } from '../src/eval-func';
-import { doSession } from '../src/main-session';
+import { doSession } from '../src/session-file-handler';
 
 // -----------------------------------------------------------------------------
 
-const Paranoid = makeAlgorithm(paranoid, countPawn100Roles, false);
-const ParaNorm = makeAlgorithm(paranoid, countPawn100Roles, true);
+const Paranoid = factory(paranoid, countPawn100Roles, false);
+const ParaNorm = factory(paranoid, countPawn100Roles, true);
 
 // -----------------------------------------------------------------------------
 

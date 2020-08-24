@@ -44,27 +44,29 @@ const MAX_SUM = 0;
 const INF = 999999;
 
 function hypermax(gameState: IGameState, depth: number, evalFunc: FEvalFunc, normalize: boolean, _alpha: TPlayerScore, players: EPlayer[]): TPlayerScore {
+    // stop recursion when game over or desired depth is reached
     if (isGameOver(gameState) || depth <= 0) {
         let score = evalFunc(gameState);
-        if (normalize) score = normalizeScore(score);
+        if (normalize) score = normalizeScore(score); // normalize if needed
         return calcHypermaxScore(score, players);
     }
     
     const player = gameState.player;
     const nextGSs = getNextGameStates(gameState);
-    let alpha = {..._alpha}; // _alpha should be immutable (but JS objects are passed by reference)
+    let alpha = {..._alpha}; // _alpha should be immutable (but JS objects are passed by reference), therefore it is copied here
     
     let bestScore = hypermax(nextGSs[0], depth - 1, evalFunc, normalize, alpha, players);
-    if (alpha[player] < bestScore[player]) {
+    if (alpha[player] < bestScore[player]) { // update best score if needed
         alpha[player] = bestScore[player];
     }
 
     for (let i = 1, ie = nextGSs.length; i < ie; i++) {
         if (sumScore(alpha) >= MAX_SUM) break; // hypermax pruning
 
+        // do the recursion
         const nextScore = hypermax(nextGSs[i], depth - 1, evalFunc, normalize, alpha, players);
 
-        if (alpha[player] < nextScore[player]) {
+        if (alpha[player] < nextScore[player]) { // update best score if needed
             alpha[player] = nextScore[player];
             bestScore = nextScore;
         }

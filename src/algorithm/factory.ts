@@ -1,13 +1,21 @@
+/**
+ * @file
+ * This file contains the algorithm factory.
+ */
+
 import { IGameState } from 'chameleon-chess-logic';
 import { getNextGameStates } from 'chameleon-chess-logic/dist/models/game-state';
 import { FEvalFunc } from '../eval-func';
 
 // -----------------------------------------------------------------------------
 
-export type EMode = 'depth'|'time';
-
+/** Signature of an algorithm instance */
 export type FAlgorithm = (gameState: IGameState, mode: EMode, modeValue: number) => IAlgorithmReturn
 
+/** Supported operation modes */
+export type EMode = 'depth'|'time';
+
+/** The return type of an algorithm instance */
 export interface IAlgorithmReturn {
     gameState: IGameState;
     depth: number;
@@ -27,7 +35,12 @@ export interface IAlgorithmFactory <S,A,P>{
     findBestScoreIndex: (scores: S[], additional: A) => number;
 }
 
-export function makeAlgorithm<S,A,P>(
+/**
+ * Creates an algorithm instance. For that to work, an implementation of the
+ * interface, an evaluation function and an optional param (when defined in the
+ * interface implementation) has to be passed.
+ */
+export function factory<S,A,P>(
     { init, evalGameState, onNextDepth, findBestScoreIndex }: IAlgorithmFactory<S,A,P>,
     evalFunc: FEvalFunc,
     param?: P
@@ -41,20 +54,25 @@ export function makeAlgorithm<S,A,P>(
 
         let scores: S[] = [];
         // ------------------------------
+        // init additional data for the algorithm
         let additional = init(gameState, param);
         // ------------------------------
 
+        // function that is called, when a new depth is reached
         const startNextDepth = () => {
             move = 0;
             depth += 1;
 
             // ------------------------------
+            // hook for the algorithm implentation to modify the addition data
             additional = onNextDepth(additional);
             // ------------------------------
         }
 
-        const begin = Date.now();
+        const begin = Date.now(); // start tracking calculation time
     
+        // evaluate first depth of game tree (in time mode)
+        // or evaluate with the custom depth when in depth mode
         for (; move < numOfMoves; move++) {
             // ------------------------------
             const { score, additional: a } = evalGameState(nextGSs[move], depth, evalFunc, additional);
@@ -64,6 +82,7 @@ export function makeAlgorithm<S,A,P>(
         }
         startNextDepth();
 
+        // iterative deepening - is only used in time mode
         if (mode === 'time') {
             while (Date.now() - begin < modeValue && depth < MAX_DEPTH) {
 
@@ -77,9 +96,10 @@ export function makeAlgorithm<S,A,P>(
             }
         }
 
-        const end = Date.now();
+        const end = Date.now(); // stop calculation time tracking
     
         // ------------------------------
+        // use custom function the find the best score and thus the best move
         const bestIndex = findBestScoreIndex(scores, additional);
         // ------------------------------
     

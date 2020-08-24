@@ -1,10 +1,25 @@
+/**
+ * @file
+ * This script is used to find the branching factor and depth of chameleon
+ * chess. Therefore, it uses the best algorithm (MaxNIS). The algorithm plays
+ * several games against itself. A probability for a random move can be provided
+ * to mix up the game play.
+ * 
+ * The script will print the results in CSV format to the console.
+ * 
+ * To run the script and store the results in a file in `data` run:
+ * npx ts-node scripts/branching-factor-and-depth.ts > data/branching-factor-and-depth.csv
+ */
+
 import { IGameState, isGameOver, beginGame } from 'chameleon-chess-logic';
 import { getNextGameStates } from 'chameleon-chess-logic/dist/models/game-state';
-import { makeAlgorithm } from './src/algorithm';
-import * as maxnis from './src/algorithm/max-n-is';
-import Random from './lib/random';
-import { Vector } from './lib/math';
-import { countPawn100Roles } from './src/eval-func';
+
+import { factory } from '../src/algorithm/factory';
+import * as maxnis from '../src/algorithm/max-n-is';
+import { countPawn100Roles } from '../src/eval-func';
+
+import Random from '../lib/random';
+import { Vector } from '../lib/math';
 
 // -----------------------------------------------------------------------------
 
@@ -12,27 +27,27 @@ Random.setSeed(1);
 
 printHeader();
 
-printGames(100, 2, 0.1);
-printGames(100, 3, 0.1);
-printGames(100, 4, 0.1);
+// printGames(100, 2, 0.01);
+// printGames(100, 3, 0.01);
+// printGames(100, 4, 0.01);
+
+// printGames(100, 2, 0.1);
+// printGames(100, 3, 0.1);
+// printGames(100, 4, 0.1);
 
 printGames(100, 2, 0.2);
 printGames(100, 3, 0.2);
 printGames(100, 4, 0.2);
 
-printGames(100, 2, 0.05);
-printGames(100, 3, 0.05);
-printGames(100, 4, 0.05);
+printGames(100, 2, 0.5);
+printGames(100, 3, 0.5);
+printGames(100, 4, 0.5);
+
+printGames(100, 2, 1);
+printGames(100, 3, 1);
+printGames(100, 4, 1);
 
 // -----------------------------------------------------------------------------
-
-interface IGameResult {
-    numOfPlayers: number;
-    chanceOfRandom: number;
-    branchingFactorAvg: number;
-    branchingFactorMedian: number;
-    depth: number;
-}
 
 function printHeader() {
     console.log('numOfPlayers,chanceOfRandom,branchingFactorAvg,branchingFactorMedian,depth');
@@ -52,11 +67,21 @@ function printGames(numOfGames: number, numOfPlayers: 2|3|4, chanceOfRandom: num
 
 // -----------------------------------------------------------------------------
 
+interface IGameResult {
+    numOfPlayers: number;
+    chanceOfRandom: number;
+    branchingFactorAvg: number;
+    branchingFactorMedian: number;
+    depth: number;
+}
+
 function playAndEvalGame(numOfPlayers: 2|3|4, chanceOfRandom: number): IGameResult {
     const GSs = playGame(numOfPlayers, chanceOfRandom);
     const { branchingFactorAvg, branchingFactorMedian, depth } = getGameStats(GSs);
     return { numOfPlayers, chanceOfRandom, branchingFactorAvg, branchingFactorMedian, depth };
 }
+
+// -----------------------------------------------------------------------------
 
 function getStartGameState(numOfPlayers: 2|3|4): IGameState {
     switch (numOfPlayers) {
@@ -74,9 +99,9 @@ function playGame(numOfPlayers: 2|3|4, chanceOfRandom: number): IGameState[] {
         result.push(gameState);
 
         if (Random.get() < chanceOfRandom) {
-            gameState = random(gameState);
+            gameState = makeRandomMove(gameState);
         } else {
-            gameState = computer(gameState);
+            gameState = makeComputerMove(gameState);
         }
     }
 
@@ -93,13 +118,13 @@ function getGameStats(gameStates: IGameState[]) {
 
 // -----------------------------------------------------------------------------
 
-const maxNIS = makeAlgorithm(maxnis, countPawn100Roles);
+const maxNIS = factory(maxnis, countPawn100Roles);
 
-function computer(gameState: IGameState): IGameState {
+function makeComputerMove(gameState: IGameState): IGameState {
     return maxNIS(gameState, 'time', 1000).gameState;
 }
 
-function random(gameState: IGameState): IGameState {
+function makeRandomMove(gameState: IGameState): IGameState {
     const nextGSs = getNextGameStates(gameState);
     const index = Random.getInt(nextGSs.length - 1);
     return nextGSs[index];

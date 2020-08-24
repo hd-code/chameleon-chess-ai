@@ -1,10 +1,16 @@
-import { EMode } from './algorithm';
+/**
+ * @file
+ * This file contains structs and methods to play a session.
+ */
+
+import { EMode } from './algorithm/factory';
 import { IGame, MNameAlgorithm, MPlayerAlgorithm, getMoveStatsOfAlgorithm, playGame, getAlgorithmsResult } from './game';
 import { flattenArray, getPermutations } from '../lib/obray';
 import { Vector, round } from '../lib/math';
 
 // -----------------------------------------------------------------------------
 
+/** Contains all data of a session */
 export interface ISession {
     algorithms: string[];
     mode: EMode;
@@ -12,6 +18,7 @@ export interface ISession {
     games: IGame[];
 }
 
+/** Plays a session with the given algorithms, mode and mode value. */
 export function playSession(algorithms: MNameAlgorithm, mode: EMode, modeValue: number): ISession {
     const algos = Object.keys(algorithms);
     const maps = getPlayerAlgoMaps(algos);
@@ -21,6 +28,7 @@ export function playSession(algorithms: MNameAlgorithm, mode: EMode, modeValue: 
 
 // -----------------------------------------------------------------------------
 
+/** The results (stats) of a played session */
 export interface ISessionResult {
     mode: EMode;
     modeValue: number;
@@ -28,6 +36,7 @@ export interface ISessionResult {
     algorithms: IAlgorithmResult[];
 }
 
+/** The results of a particular algorithm from a session. */
 export interface IAlgorithmResult {
     algorithm: string;
     wins: number;
@@ -39,6 +48,7 @@ export interface IAlgorithmResult {
     timeMedian: number;
 }
 
+/** Calculates and returns the stats of a session. */
 export function evalSession(session: ISession): ISessionResult {
     return {
         mode: session.mode,

@@ -42,9 +42,10 @@ const MAX_SCORE = 1;
 const MIN_SCORE = 0;
 
 function maxNIS(gameState: IGameState, depth: number, evalFunc: FEvalFunc, parentsBestScore = 0): TPlayerScore {
+    // stop recursion when game over or desired depth is reached
     if (isGameOver(gameState) || depth <= 0) {
         const score = evalFunc(gameState);
-        return normalizeScore(score);
+        return normalizeScore(score); // score always has to be normalized here
     }
     
     const player = gameState.player;
@@ -56,8 +57,9 @@ function maxNIS(gameState: IGameState, depth: number, evalFunc: FEvalFunc, paren
     for (let i = 1, ie = nextGSs.length; i < ie; i++) {
         if (bestScore[player] >= maxScore) break; // immediate & shallow pruning
 
+        // do the recursion
         const nextScore = maxNIS(nextGSs[i], depth - 1, evalFunc, bestScore[player]);
-        if (bestScore[player] < nextScore[player]) {
+        if (bestScore[player] < nextScore[player]) { // update best score if needed
             bestScore = nextScore;
         }
     }

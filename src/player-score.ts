@@ -1,3 +1,8 @@
+/**
+ * @file
+ * This file contains the data struct and methods for the score.
+ */
+
 import { EPlayer } from 'chameleon-chess-logic';
 
 // -----------------------------------------------------------------------------

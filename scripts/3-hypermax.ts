@@ -1,12 +1,18 @@
-import { makeAlgorithm } from '../src/algorithm';
+/**
+ * @file
+ * This script will compare the hypermax algorithm in its normalized version
+ * with the non-normalized version.
+ */
+
+import { factory } from '../src/algorithm/factory';
 import * as hypermax from '../src/algorithm/hypermax';
 import { countPawn100Roles } from '../src/eval-func';
-import { doSession } from '../src/main-session';
+import { doSession } from '../src/session-file-handler';
 
 // -----------------------------------------------------------------------------
 
-const Hypermax  = makeAlgorithm(hypermax, countPawn100Roles, false);
-const Hypernorm = makeAlgorithm(hypermax, countPawn100Roles, true);
+const Hypermax  = factory(hypermax, countPawn100Roles, false);
+const Hypernorm = factory(hypermax, countPawn100Roles, true);
 
 // -----------------------------------------------------------------------------
 

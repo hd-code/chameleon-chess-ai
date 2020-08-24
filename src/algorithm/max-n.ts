@@ -33,8 +33,10 @@ export function findBestScoreIndex(scores: S[], additional: A): number {
 // -----------------------------------------------------------------------------
 
 function maxN(gameState: IGameState, depth: number, evalFunc: FEvalFunc): TPlayerScore {
+    // stop recursion when game over or desired depth is reached
     if (isGameOver(gameState) || depth <= 0) {
-        return calcScore(gameState, evalFunc);
+        const score = evalFunc(gameState);
+        return normalizeScore(score); // score always has to be normalized here
     }
     
     const player = gameState.player;
@@ -43,16 +45,12 @@ function maxN(gameState: IGameState, depth: number, evalFunc: FEvalFunc): TPlaye
     let bestScore = maxN(nextGSs[0], depth - 1, evalFunc);
 
     for (let i = 1, ie = nextGSs.length; i < ie; i++) {
+        // do the recursion
         const nextScore = maxN(nextGSs[i], depth - 1, evalFunc);
-        if (bestScore[player] < nextScore[player]) {
+        if (bestScore[player] < nextScore[player]) { // update best score if needed
             bestScore = nextScore;
         }
     }
 
     return bestScore;
-}
-
-function calcScore(gameState: IGameState, evalFunc: FEvalFunc) {
-    const score = evalFunc(gameState);
-    return normalizeScore(score);
 }

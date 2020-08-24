@@ -1,30 +1,21 @@
+/**
+ * @file
+ * This file contains all evaluation functions, that where tested against each other.
+ */
+
 import { IGameState, getMoves, ERole } from 'chameleon-chess-logic';
 import { getFieldColor } from 'chameleon-chess-logic/dist/models/board';
 import { TPlayerScore, getZeroScore } from './player-score';
 
 // -----------------------------------------------------------------------------
-// General
+// Function Signature
 // -----------------------------------------------------------------------------
 
 /** General signature for an evaluation function. */
 export type FEvalFunc = (gameState: IGameState) => TPlayerScore;
 
-/** The best evaluation function. */
-export function evalGameState(gameState: IGameState): TPlayerScore {
-    let result = getZeroScore();
-
-    for (let i = 0, ie = gameState.pawns.length; i < ie; i++) {
-        const pawn = gameState.pawns[i];
-        const fieldColor = getFieldColor(pawn.position);
-        const role = pawn.roles[fieldColor];
-        result[pawn.player] += MRoleScore100[role];
-    }
-
-    return result;
-}
-
 // -----------------------------------------------------------------------------
-// Different evaluation functions
+// Evaluation Functions
 // -----------------------------------------------------------------------------
 
 export function countPawns(gameState: IGameState): TPlayerScore {

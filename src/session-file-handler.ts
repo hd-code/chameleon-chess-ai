@@ -1,12 +1,21 @@
+/**
+ * @file
+ * This file will care for the file handling of a session. Session results are
+ * stored and retrieved from the `data` directory. This file offers a convenient
+ * `doSession` function, which will play session if it was not played before.
+ */
+
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { EMode } from './algorithm';
+import { EMode } from './algorithm/factory';
 import { MNameAlgorithm } from './game';
 import { playSession, evalSession, ISessionResult } from './session';
 
 // -----------------------------------------------------------------------------
 
+/** Will do a session and store it to the `data` directory. If the session is
+ * called again, it will just retrieved the stored data. */
 export function doSession(name: string, algorithms: MNameAlgorithm, mode: EMode, modeValue: number) {
     let session: any = loadData(name);
     let cached = true;
