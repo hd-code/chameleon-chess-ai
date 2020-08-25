@@ -16,8 +16,11 @@ const Hypernorm = factory(hypermax, countPawn100Roles, true);
 
 // -----------------------------------------------------------------------------
 
+doSession('3-hypermax-d1',    { Hypermax, Hypernorm }, 'depth', 1);
+doSession('3-hypermax-d2',    { Hypermax, Hypernorm }, 'depth', 2);
 doSession('3-hypermax-d3',    { Hypermax, Hypernorm }, 'depth', 3);
+doSession('3-hypermax-d4',    { Hypermax, Hypernorm }, 'depth', 4);
 
+doSession('3-hypermax-t10',  { Hypermax, Hypernorm }, 'time', 10);
 doSession('3-hypermax-t100',  { Hypermax, Hypernorm }, 'time', 100);
-
 doSession('3-hypermax-t1000', { Hypermax, Hypernorm }, 'time', 1000);

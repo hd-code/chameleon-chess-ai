@@ -26,6 +26,7 @@ doSession('4-all-d2',    { MaxN, MaxNIS, Hypermax, Paranoid }, 'depth', 2);
 doSession('4-all-d3',    { MaxN, MaxNIS, Hypermax, Paranoid }, 'depth', 3);
 doSession('4-all-d4',    { MaxN, MaxNIS, Hypermax, Paranoid }, 'depth', 4);
 
+doSession('4-all-t10',  { MaxN, MaxNIS, Hypermax, Paranoid }, 'time', 10);
 doSession('4-all-t100',  { MaxN, MaxNIS, Hypermax, Paranoid }, 'time', 100);
 doSession('4-all-t1000', { MaxN, MaxNIS, Hypermax, Paranoid }, 'time', 1000);
 

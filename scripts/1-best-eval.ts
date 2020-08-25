@@ -23,8 +23,6 @@ doSession('1-all-d2',    { Pawns, Pawns10Roles, Pawns100Roles, Pawns100Moves }, 
 doSession('1-all-d3',    { Pawns, Pawns10Roles, Pawns100Roles, Pawns100Moves }, 'depth', 3);
 doSession('1-all-d4',    { Pawns, Pawns10Roles, Pawns100Roles, Pawns100Moves }, 'depth', 4);
 
-doSession('1-all-t100',  { Pawns, Pawns10Roles, Pawns100Roles, Pawns100Moves }, 'time', 100);
-
 doSession('1-10-vs-100-d1', { Pawns10Roles, Pawns100Roles }, 'depth', 1);
 doSession('1-10-vs-100-d2', { Pawns10Roles, Pawns100Roles }, 'depth', 2);
 doSession('1-10-vs-100-d3', { Pawns10Roles, Pawns100Roles }, 'depth', 3);

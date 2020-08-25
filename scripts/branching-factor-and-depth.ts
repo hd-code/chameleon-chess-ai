@@ -9,6 +9,8 @@
  * 
  * To run the script and store the results in a file in `data` run:
  * npx ts-node scripts/branching-factor-and-depth.ts > data/branching-factor-and-depth.csv
+ * 
+ * *Attention*: Running this script takes ages!
  */
 
 import { IGameState, isGameOver, beginGame } from 'chameleon-chess-logic';
@@ -23,17 +25,19 @@ import { Vector } from '../lib/math';
 
 // -----------------------------------------------------------------------------
 
+const maxNIS = factory(maxnis, countPawn100Roles);
+
 Random.setSeed(1);
 
 printHeader();
 
-// printGames(100, 2, 0.01);
-// printGames(100, 3, 0.01);
-// printGames(100, 4, 0.01);
+printGames(100, 2, 0.01);
+printGames(100, 3, 0.01);
+printGames(100, 4, 0.01);
 
-// printGames(100, 2, 0.1);
-// printGames(100, 3, 0.1);
-// printGames(100, 4, 0.1);
+printGames(100, 2, 0.1);
+printGames(100, 3, 0.1);
+printGames(100, 4, 0.1);
 
 printGames(100, 2, 0.2);
 printGames(100, 3, 0.2);
@@ -117,8 +121,6 @@ function getGameStats(gameStates: IGameState[]) {
 }
 
 // -----------------------------------------------------------------------------
-
-const maxNIS = factory(maxnis, countPawn100Roles);
 
 function makeComputerMove(gameState: IGameState): IGameState {
     return maxNIS(gameState, 'time', 1000).gameState;
