@@ -121,7 +121,6 @@ function getAlgorithmResult(algorithm: string, session: ISession): IAlgorithmRes
     const draws = results.filter(result => result === 'draw').length;
     const losses = results.filter(result => result === 'loss').length;
 
-    // games with a draw wreck the stats statistics, so they are excluded !
     const tmpStats = session.games.map(game => {
         return getMoveStatsOfAlgorithm(algorithm, game);
     });

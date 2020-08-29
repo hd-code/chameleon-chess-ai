@@ -7,7 +7,7 @@
 import { factory } from '../src/algorithm/factory';
 import * as hypermax from '../src/algorithm/hypermax';
 import { countPawn100Roles } from '../src/eval-func';
-import { doSession } from '../src/session-file-handler';
+import { loadOrDoSession } from '../src/session-ui';
 
 // -----------------------------------------------------------------------------
 
@@ -16,11 +16,13 @@ const Hypernorm = factory(hypermax, countPawn100Roles, true);
 
 // -----------------------------------------------------------------------------
 
-doSession('3-hypermax-d1',    { Hypermax, Hypernorm }, 'depth', 1);
-doSession('3-hypermax-d2',    { Hypermax, Hypernorm }, 'depth', 2);
-doSession('3-hypermax-d3',    { Hypermax, Hypernorm }, 'depth', 3);
-doSession('3-hypermax-d4',    { Hypermax, Hypernorm }, 'depth', 4);
+console.log('Determine whether the Hypermax should normalize the payouts:');
 
-doSession('3-hypermax-t10',  { Hypermax, Hypernorm }, 'time', 10);
-doSession('3-hypermax-t100',  { Hypermax, Hypernorm }, 'time', 100);
-doSession('3-hypermax-t1000', { Hypermax, Hypernorm }, 'time', 1000);
+loadOrDoSession('3-hypermax-d1',    { Hypermax, Hypernorm }, 'depth', 1);
+loadOrDoSession('3-hypermax-d2',    { Hypermax, Hypernorm }, 'depth', 2);
+loadOrDoSession('3-hypermax-d3',    { Hypermax, Hypernorm }, 'depth', 3);
+loadOrDoSession('3-hypermax-d4',    { Hypermax, Hypernorm }, 'depth', 4);
+
+loadOrDoSession('3-hypermax-t10',  { Hypermax, Hypernorm }, 'time', 10);
+loadOrDoSession('3-hypermax-t100',  { Hypermax, Hypernorm }, 'time', 100);
+loadOrDoSession('3-hypermax-t1000', { Hypermax, Hypernorm }, 'time', 1000);

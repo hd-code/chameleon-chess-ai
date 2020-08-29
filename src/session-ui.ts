@@ -16,7 +16,7 @@ import { playSession, evalSession, ISessionResult } from './session';
 
 /** Will do a session and store it to the `data` directory. If the session is
  * called again, it will just retrieved the stored data. */
-export function doSession(name: string, algorithms: MNameAlgorithm, mode: EMode, modeValue: number) {
+export function loadOrDoSession(name: string, algorithms: MNameAlgorithm, mode: EMode, modeValue: number) {
     let session: any = loadData(name);
     let cached = true;
 

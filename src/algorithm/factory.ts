@@ -64,7 +64,7 @@ export function factory<S,A,P>(
             depth += 1;
 
             // ------------------------------
-            // hook for the algorithm implentation to modify the addition data
+            // hook for the algorithm implementation to modify the additional data
             additional = onNextDepth(additional);
             // ------------------------------
         }
