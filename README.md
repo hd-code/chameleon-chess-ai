@@ -15,7 +15,7 @@ Die meisten Teile dieses Projektes sind in Node.js implementiert. Daher wird ben
 - **Node.js** v12 oder höher
 - **NPM** v6 oder höher
 
-Zusätzlich ist die Ermittlung des Branching Factors und der durchschnittlichen Depth des Spieles mit einem Jupyter Notebook erfolgt. Entweder muss also **Jupyter** installiert sein oder alternativ: **Docker**. Dieses Projekt enthält auch ein Docker-Compose file, welches eine Jupyter Notebook Instanz hochfahren kann.
+Zusätzlich ist die Ermittlung des Branching Factors und der durchschnittlichen Depth des Spieles mit einem Jupyter Notebook erfolgt. Entweder muss also **Jupyter** installiert sein oder alternativ: **Docker**. Dieses Projekt enthält auch ein Docker-Compose-file, welches eine Jupyter Notebook Instanz hochfahren kann.
 
 ## Installation
 
