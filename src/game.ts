@@ -1,29 +1,45 @@
+/**
+ * @file
+ * This file contains methods to play a game in the context of a session.
+ */
+
 import { IGameState, EPlayer, beginGame, isGameOver, isPlayersAlive } from 'chameleon-chess-logic';
-import { EMode, MPlayerAlgorithm, MPlayerAlgorithmName } from './types';
+import { EMode, FAlgorithm } from './algorithm/factory';
 
 // -----------------------------------------------------------------------------
 
+/** Data structure for a played game */
 export interface IGame {
-    players: MPlayerAlgorithmName;
-    mode: EMode;
-    modeValue: number;
+    /** The algorithms to participate */
+    players: MPlayerAlgorithm;
+    /** The game states that occured during the cause of a game including
+     * beginning and terminate state */
     gameStates: IGameState[];
+    /** Stats for each move. Contains one entry less than `gameStates` */
     moveStats: IMoveStats[];
 }
 
+/** A map to link the algorithm's name to the algorithm function */
+export type MNameAlgorithm = {[name: string]: FAlgorithm};
+
+/** A map to link a player to an algorithm name (or null) */
+export type MPlayerAlgorithm = {[player in EPlayer]: string|null};
+
+/** Hold the stats of a particular move */
 export interface IMoveStats {
     depth: number;
     time: number;
 }
 
-export function playGame(players: MPlayerAlgorithm, mode: EMode, modeValue: number): IGame {
+/** Plays a game in the context of a session */
+export function playGame(algorithms: MNameAlgorithm, players: MPlayerAlgorithm, mode: EMode, modeValue: number): IGame {
     let gameState = getInitGameState(players);
 
     let gameStates = [gameState];
     let moveStats: IMoveStats[] = [];
 
     while (!isGameOver(gameState) && gameStates.length <= MAX_TURNS) {
-        const algorithm = players[gameState.player];
+        const algorithm = algorithms[players[gameState.player]];
         const { gameState: gs, ...stats } = algorithm(gameState, mode, modeValue);
         gameState = gs;
 
@@ -31,9 +47,12 @@ export function playGame(players: MPlayerAlgorithm, mode: EMode, modeValue: numb
         moveStats.push(stats);
     }
 
-    return { players: getAlgorithmNames(players), mode, modeValue, gameStates, moveStats };
+    return { players, gameStates, moveStats };
 }
 
+// -----------------------------------------------------------------------------
+
+/** Returns how a particular algorithm finished the game */
 export function getAlgorithmsResult(algorithm: string, game: IGame): 'win'|'draw'|'loss' {
     const lastGS = game.gameStates[game.gameStates.length - 1];
     const livingPlayers = getLivingPlayers(lastGS);
@@ -43,9 +62,10 @@ export function getAlgorithmsResult(algorithm: string, game: IGame): 'win'|'draw
     
     if (livingPlayers.length === livingAlgorithmPlayers.length) return 'win';
 
-    return 'draw'
+    return 'draw';
 }
 
+/** Extracts all the move stats of just one algorithm */
 export function getMoveStatsOfAlgorithm(algorithm: string, game: IGame): IMoveStats[] {
     let result = [];
     for (let i = 0, ie = game.moveStats.length; i < ie; i++) {
@@ -68,16 +88,6 @@ function getInitGameState(playerAlgorithm: MPlayerAlgorithm): IGameState {
         playerAlgorithm[EPlayer.YELLOW] !== null,
         playerAlgorithm[EPlayer.BLUE] !== null
     );
-}
-
-function getAlgorithmNames(playerAlgorithm: MPlayerAlgorithm): MPlayerAlgorithmName {
-    let result: MPlayerAlgorithmName = { 0: null, 1: null, 2: null, 3: null };
-    for (const key in playerAlgorithm) {
-        if (playerAlgorithm[key] !== null) {
-            result[key] = playerAlgorithm[key].name;
-        }
-    }
-    return result;
 }
 
 function getLivingPlayers(gameState: IGameState): EPlayer[] {

@@ -4,7 +4,7 @@
 # macOS
 .DS_Store
 
-# node.js
+# npm
 node_modules
 package-lock.json
 
