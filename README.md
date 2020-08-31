@@ -67,3 +67,7 @@ Das Passwort lautet: `secret`
 - `notebooks` enthält die Jupiter Notebook-Dateien.
 - `scripts` enthält alle Skripte, die Daten für die Bachelor Arbeit generieren und darstellen.
 - `src` enthält den Source-Code für die Bewertungsfunktionen, die Implementierungen der Algorithmen sowie weitere Software Komponenten, die zum Beispiel von den Skripten verwendet werden.
+- `thesis` enthält die Ursprungsdateien, mit denen die fertige Bachelor Arbeit als PDF generiert worden ist.
+
+TODO: Skripte + daten erklären
+thesis generierung erklären

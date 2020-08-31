@@ -1,0 +1,48 @@
+% --- Metainformation ----------------------------------------------------------
+
+\newcommand{\art}{Bachelorarbeit}
+\newcommand{\titel}{Implementierung eines Computergegners für Chamäleon Schach nach heuristischem Ansatz}
+% \newcommand{\untertitel}{Untertitel}
+\newcommand{\autor}{Hannes Dröse}
+\newcommand{\registriernr}{AI-2020-BA-012}
+\newcommand{\hochschule}{Fachhochschule Erfurt}
+\newcommand{\fachgebiet}{Angewandte Informatik}
+\newcommand{\erstgutachter}{Prof. Dr. Ines-Kerstin Rossak}
+\newcommand{\zweitgutachter}{Prof. Dr. Steffen Avemarg}
+\newcommand{\datum}{31.08.2020}
+\newcommand{\keywords}{aa,bb,cc,dd}
+\newcommand{\ort}{Erfurt}
+
+% --- Custom Includes ----------------------------------------------------------
+
+\usepackage{tikz}
+\tikzset{
+    level 1/.style={sibling distance=10em},
+    level 2/.style={sibling distance=10em},
+    level 3/.style={sibling distance=10em},
+    align=center
+}
+
+\usetikzlibrary{trees}
+
+\usepackage{pseudo}
+\pseudoset{
+    ctfont=\color{gray},
+    ct-left=\unskip\qquad\color{gray}\texttt{// },
+    ct-right=\texttt{},
+    label=\texttt{}
+}
+
+% ------------------------------------------------------------------------------
+
+% --- Kopf- & Fußzeile ---------------------------------------------------------
+
+\usepackage[automark,plainheadsepline,autooneside]{scrpage2}
+\pagestyle{scrheadings}
+\setheadsepline{.4pt}                                   % Separate Linie im Kopf
+\clearscrheadfoot                                       % Kopf und Fuzeile lschen
+\ihead[\hochschule]{\hochschule}                        % im Kopf -> links
+\ohead[\fachgebiet]{\fachgebiet}                        % im Kopf -> rechts
+\cfoot[\pagemark]{\pagemark}                            % Seitenzahl
+\renewcommand*{\headfont}{\upshape\sffamily\scriptsize} % Schrift Kopfzeile
+\renewcommand*{\footfont}{\normalfont\sffamily\small}   % Schrift Fußzeile
