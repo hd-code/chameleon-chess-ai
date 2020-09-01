@@ -67,17 +67,17 @@ Das Passwort lautet: `secret`
 - `notebooks` enthält Jupiter-Notebook-Dateien.
 - `scripts` enthält alle Skripte, die Daten für die Bachelor Arbeit generieren und darstellen.
 - `src` enthält den Source-Code für die Bewertungsfunktionen, die Implementierungen der Algorithmen sowie weitere Software-Komponenten, die zum Beispiel von den Skripten verwendet werden.
-- `thesis` enthält die Ursprungsdateien, mit denen die fertige Bachelor Arbeit als PDF generiert worden ist.
+- `thesis` enthält die Dateien, mit denen die fertige Bachelor Arbeit als PDF generiert worden ist.
 
 ## Skripte
 
 Folgende Skripte sind erstellt worden:
 
-- `1-best-eval.ts`: spielt mehrere Sessions mit MaxN-Instanzen und verschiedenen Bewertungsfunktionen gegeneinander. Ziel ist es die beste Bewertungsfunktion zu finden.
+- `1-best-eval.ts`: spielt mehrere Sessions mit MaxN-Instanzen, um verschiedenen Bewertungsfunktionen gegeneinander zu testen. Ziel ist es, die beste Bewertungsfunktion zu finden.
 - `2-paranoid.ts`: spielt mehrere Sessions mit dem Paranoid-Algorithmus in normierter und nicht normierter Form. Ziel ist es, herauszufinden, ob der Paranoid mit oder ohne Normierung arbeiten soll.
 - `3-hypermax.ts`: macht das gleiche wie `2-paranoid.ts`, allerdings mit dem Hypermax statt dem Paranoid.
 - `4-best-algo.ts`: spielt mehrere Sessions mit dem MaxN, MaxNIS, Hypermax und Paranoid, um den besten Algorithmus für "Chamäleon Schach" zu ermitteln.
-- `branching-factor-and-depth.ts`: nutzt den Sieger-Algorithmus (MaxNIS), um wiederholt Spiele gegen sich selbst zu spielen. Dabei wird mit verschiedenen Wahrscheinlichkeiten ein Zufallszug ausgeführt. Die gespielten Spiele sind gespeichert worden und anschließend mit einem Jupyter-Notebook analysiert worden.
+- `branching-factor-and-depth.ts`: nutzt den Sieger-Algorithmus (MaxNIS), um wiederholt Spiele gegen sich selbst zu spielen. Dabei wird mit verschiedenen Wahrscheinlichkeiten ein Zufallszug ausgeführt. Die gespielten Spiele sind gespeichert und anschließend mit einem Jupyter-Notebook analysiert worden.
 
 Alle Sessions speichern den kompletten Spielverlauf in einer Datei im Ordner `data`, welche den gleichen Namen wie die Session trägt. Aus diesem Grund steht bei den Tabellen, die von den Skripten generiert werden immer "cached" dahinter. Dies zeigt, dass die Wert nicht neu berechnet worden sind, sondern aus den JSON-Dateien im `data`-Ordner stammen. Wenn Berechnungen erneut durchgeführt werden sollen, muss unbedingt die zugehörige JSON-Datei gelöscht werden. Ansonsten werden immer nur die gecachten Daten ausgegeben. 
 
