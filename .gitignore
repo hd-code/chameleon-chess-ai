@@ -5,7 +5,8 @@
 .DS_Store
 
 # npm
-node_modules
+node_modules/*
+!node_modules/chameleon-chess-logic/
 package-lock.json
 
 # vscode
